@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --background: #ffffff;
+  --font-bricolage: "Bricolage Grotesque", sans-serif;
+  --color-btGray: #E5E5E5;
+  --color-btBlue: #4538CB;
+  --color-primary: #191919;
+  --color-gray: #6E6E6E;
+  --color-btext: #7D7D7D;
+  --color-cardBg: #FBFBFB;
+  --color-sLine: #E5E5E5;
+  --color-tLine: #EAEAEA;
+  --color-unavail: #B1B1B1;
+  --color-theadBg: #F8F8F8;
+  --color-success: #2ECC71;
+  --color-headBg: #EEEDFF;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+.bg-svg {
+  background-image: url('/vga-kinetic-export.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;  
+}
+.tab-bg {
+  background: linear-gradient(90deg, #F3F2FF 49%, #F0EFFF 46%);
+}
