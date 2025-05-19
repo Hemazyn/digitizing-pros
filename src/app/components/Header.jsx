@@ -32,9 +32,9 @@ export default function Header() {
                          <Link href="/contact" className="font-medium text-sm cursor-pointer">Contact</Link>
                     </nav>
                     <div className="hidden md:flex gap-2.5">
-                         <button className="py-2 px-2.5 rounded-lg bg-btGray font-medium text-sm">Client Portal</button>
-                         <button className="py-2 px-2.5 rounded-lg shadow font-medium text-sm">Login</button>
-                         <button className="py-2 px-2.5 rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 text-white font-medium text-sm">Shop Now</button>
+                         {/* <Link href="/" className="py-2 px-2.5 rounded-lg bg-btGray font-medium text-sm">Client Portal</Link> */}
+                         <Link href="/login" className="py-2 px-2.5 rounded-lg shadow font-medium text-sm">Login</Link>
+                         <Link href="/register" className="py-2 px-2.5 rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 text-white font-medium text-sm">Shop Now</Link>
                     </div>
                     <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
                          {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -54,15 +54,15 @@ export default function Header() {
                               </a>
                          </nav>
                          <div className="flex flex-col gap-3">
-                              <button className="py-2 px-4 rounded-lg bg-btGray font-medium text-sm text-gray-700 hover:bg-gray-300 transition">
+                              {/* <Link href="/" className="py-2 px-4 rounded-lg bg-btGray font-medium text-sm text-gray-700 hover:bg-gray-300 transition">
                                    Client Portal
-                              </button>
-                              <button className="py-2 px-4 rounded-lg shadow font-medium text-sm text-gray-900 hover:bg-gray-100 transition">
+                              </Link> */}
+                              <Link href="/login" className="py-2 px-4 rounded-lg shadow font-medium text-sm text-gray-900 hover:bg-gray-100 transition">
                                    Login
-                              </button>
-                              <button className="py-2 px-4 rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 text-white font-medium text-sm hover:bg-blue-600 transition">
+                              </Link>
+                              <Link href="/register" className="py-2 px-4 rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 text-white font-medium text-sm hover:bg-blue-600 transition">
                                    Shop Now
-                              </button>
+                              </Link>
                          </div>
                     </div>
                )}
