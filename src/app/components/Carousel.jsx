@@ -19,7 +19,7 @@ export default function Gallery() {
                     {/* Carousel Container */}
                     <div className="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar scroll-smooth">
                          {images.map((src, idx) => (
-                              <div key={idx} className="min-w-[160px] md:min-w-[200px] lg:min-w-[240px] h-[160px] md:h-[200px] lg:h-[240px] flex-shrink-0 rounded-xl overflow-hidden shadow hover:scale-105 transition-transform duration-300">
+                              <div key={idx} className="min-w-[160px] md:min-w-[200px] lg:min-w-[240px] h-[160px] md:h-[200px] lg:h-[240px] flex-shrink-0 rounded-xl overflow-hidden shadow hover:scale-105 transition-transform duration-300 border">
                                    <Image src={src} alt={`Embroidery ${idx + 1}`} width={240} height={240} className="w-full h-full object-cover" priority />
                               </div>
                          ))}

@@ -17,9 +17,11 @@ export default function PricingSection() {
                     </p>
                     <div className="tab-bg flex justify-center items-center gap-1.5 mb-12 px-1 py-1 w-fit mx-auto rounded-full">
                          {tabs.map((tab) => (
-                              <button key={tab} onClick={() => setActiveTab(tab)} className={`px-3 py-2 text-sm font-medium ${activeTab === tab ? "drop-shadow-[0_4px_6px_#EEEDFF] text-black rounded-full bg-white" : " text-black"}`}>
-                                   {tab}
-                              </button>
+                              <div key={tab} className={`p-[2px] rounded-full ${activeTab === tab ? "bg-gradient-to-r from-[#EEEDFF] to-[#EAE8FF]" : ""}`}>
+                                   <button onClick={() => setActiveTab(tab)} className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 cursor-pointer ${activeTab === tab ? "bg-white text-black" : "text-black"}`}>
+                                        {tab}
+                                   </button>
+                              </div>
                          ))}
                     </div>
                     {activeTab === "Embroidery Digitizing" && (

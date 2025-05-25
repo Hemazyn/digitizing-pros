@@ -5,9 +5,9 @@ export default function Vector() {
           { quantity: "10+", type: "Simple Designs", price: "$5", savings: "Save $2 each" },
           { quantity: "10+", type: "Moderate Designs", price: "$13", savings: "Save $2 each" },
           { quantity: "10+", type: "Complex Designs", price: "$18", savings: "Save $2 each" },
-          { quantity: "20+", type: "Simple Designs", price: "$4.5", savings: "Save $2 each" },
-          { quantity: "20+", type: "Moderate Designs", price: "$12.5", savings: "Save $2 each" },
-          { quantity: "20+", type: "Complex Designs", price: "$17.5", savings: "Save $2 each" },
+          { quantity: "20+", type: "Simple Designs", price: "$4.5", savings: "Save $2.5 each" },
+          { quantity: "20+", type: "Moderate Designs", price: "$12.5", savings: "Save $2.5 each" },
+          { quantity: "20+", type: "Complex Designs", price: "$17.5", savings: "Save $2.5 each" },
      ];
 
      return (

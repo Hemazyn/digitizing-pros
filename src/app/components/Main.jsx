@@ -24,15 +24,15 @@ export default function Main() {
 
                          {/* Feature Badges */}
                          <div className="flex flex-wrap justify-center gap-3 md:gap-5">
-                              <div className="flex items-center gap-2 bg-white rounded-full border py-1.5 px-3">
+                              <div className="flex items-center gap-2 bg-white rounded-full py-1.5 px-3">
                                    <Image src="/time.svg" alt="24hr" width={20} height={20} />
                                    <span className="font-medium text-sm md:text-base text-primary">24hr Delivery</span>
                               </div>
-                              <div className="flex items-center gap-2 bg-white rounded-full border py-1.5 px-3">
+                              <div className="flex items-center gap-2 bg-white rounded-full py-1.5 px-3">
                                    <Image src="/money.svg" alt="Money-back" width={20} height={20} />
                                    <span className="font-medium text-sm md:text-base text-primary">Money-Back Guarantee</span>
                               </div>
-                              <div className="flex items-center gap-2 bg-white rounded-full border py-1.5 px-3">
+                              <div className="flex items-center gap-2 bg-white rounded-full py-1.5 px-3">
                                    <Image src="/secure.svg" alt="Secure" width={20} height={20} />
                                    <span className="font-medium text-sm md:text-base text-primary">Secure Checkout</span>
                               </div>
