@@ -7,13 +7,13 @@ export default function Footer() {
                     &copy; {new Date().getFullYear()} Digitizing Pros. All rights reserved.
                </div>
                <nav className="flex space-x-6">
-                    <Link href="/terms" className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">
+                    <Link href="/terms" className="hover:underline focus:outline-none rounded">
                          Terms
                     </Link>
-                    <Link href="/privacy" className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">
+                    <Link href="/privacy" className="hover:underline focus:outline-none rounded">
                          Privacy
                     </Link>
-                    <Link href="/contact" className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">
+                    <Link href="/contact" className="hover:underline focus:outline-none rounded">
                          Contact
                     </Link>
                </nav>

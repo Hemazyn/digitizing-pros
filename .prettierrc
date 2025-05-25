@@ -1,0 +1,7 @@
+{
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindAttributes": ["className"],
+  "tailwindPreserveWhitespace": false,
+  "bracketSameLine": true,
+  "printWidth": 20000
+}

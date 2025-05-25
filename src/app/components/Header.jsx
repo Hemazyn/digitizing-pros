@@ -1,71 +1,170 @@
 "use client";
-import { useState, useEffect } from "react";
-import Link from 'next/link';
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import Logo from "./Logo";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingCart, ChevronDown, ChevronUp } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { signOut } from "firebase/auth";
+import { auth } from "@/firebase/firebase";
+import Image from "next/image";
 
 export default function Header() {
-     const [isOpen, setIsOpen] = useState(false);
-     const [scrolled, setScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user } = useAuth();
 
-     useEffect(() => {
-          const handleScroll = () => {
-               if (window.scrollY > 10) {
-                    setScrolled(true);
-               } else {
-                    setScrolled(false);
-               }
-          };
-          window.addEventListener("scroll", handleScroll);
-          return () => window.removeEventListener("scroll", handleScroll);
-     }, []);
+  const firstName = user?.displayName?.split(" ")[0] || "User";
 
-     return (
-          <header className={`fixed w-full z-50 transition-colors duration-300 ${scrolled ? "bg-white border-b border-btGray" : "bg-transparent"
-               }`}>
-               <div className="flex justify-between items-center py-3 px-4 md:px-20">
-                    <Logo />
-                    <nav className="hidden md:flex items-center gap-8">
-                         <a href="#main" className="font-medium text-sm cursor-pointer">Home</a>
-                         <a href="#how-it-works" className="font-medium text-sm cursor-pointer">How it Works</a>
-                         <a href="#pricing" className="font-medium text-sm cursor-pointer">Pricing</a>
-                         <Link href="/contact" className="font-medium text-sm cursor-pointer">Contact</Link>
-                    </nav>
-                    <div className="hidden md:flex gap-2.5">
-                         {/* <Link href="/" className="py-2 px-2.5 rounded-lg bg-btGray font-medium text-sm">Client Portal</Link> */}
-                         <Link href="/login" className="py-2 px-2.5 rounded-lg shadow font-medium text-sm">Login</Link>
-                         <Link href="/register" className="py-2 px-2.5 rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 text-white font-medium text-sm">Shop Now</Link>
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+  };
+  const dropdownRef = useRef();
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <header className={`fixed z-50 w-full transition-colors duration-300 ${scrolled ? "border-btGray border-b bg-white" : "bg-transparent"}`}>
+      <div className="flex items-center justify-between px-4 py-3 md:px-20">
+        <Logo />
+        <nav className="hidden items-center gap-8 md:flex">
+          <a href="/#main" className="cursor-pointer text-sm font-medium">
+            Home
+          </a>
+          <a href="/#how-it-works" className="cursor-pointer text-sm font-medium">
+            How it Works
+          </a>
+          <a href="/#pricing" className="cursor-pointer text-sm font-medium">
+            Pricing
+          </a>
+          <Link href="/contact" className="cursor-pointer text-sm font-medium">
+            Contact
+          </Link>
+        </nav>
+        <div className="hidden items-center gap-4 md:flex">
+          {user ? (
+            <div className="flex flex-row gap-5">
+              <button className="relative" aria-label="Cart">
+                <ShoppingCart size={20} className="cursor-pointer" />
+              </button>
+              <div className="relative" ref={dropdownRef}>
+                <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-1.5 p-1">
+                  <img src={user.photoURL} alt="User Avatar" width={20} height={20} className="rounded-full" />
+                  <span className="text-sm font-medium">{firstName}</span>
+                  {dropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+                {dropdownOpen && (
+                  <div className="absolute right-0 z-50 mt-2 w-30 rounded-xl bg-white">
+                    <div className="divide-btGray flex flex-col divide-y">
+                      <Link href="/orders" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 rounded-t-xl px-3 py-2">
+                        <Image src="/orders.svg" width={16} height={16} alt="orders" />
+                        <span className="text-sm">Orders</span>
+                      </Link>
+                      <Link href="/inbox" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
+                        <Image src="/inbox.svg" width={16} height={16} alt="inbox" />
+                        <span className="text-sm">Inbox</span>
+                      </Link>
+                      <button onClick={handleLogout} className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 rounded-b-xl px-3 py-2">
+                        <Image src="/logout.svg" width={16} height={16} alt="logout" />
+                        <span className="text-sm">Logout</span>
+                      </button>
                     </div>
-                    <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-                         {isOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
-               </div>
-               {isOpen && (
-                    <div className="md:hidden flex flex-col gap-6 px-6 py-5 border-t border-btGray rounded-b-lg shadow-md
-                  bg-gradient-to-b from-[#E0E7FF] to-white">
-                         <nav className="flex flex-col gap-4">
-                              {["Home", "How it Works", "Pricing"].map((item) => (
-                                   <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, "")}`} className="font-medium text-base text-gray-800 hover:text-btBlue transition-colors"  >
-                                        {item}
-                                   </a>
-                              ))}
-                              <a href="/contact" className="font-medium text-base text-gray-800 hover:text-btBlue transition-colors">
-                                   Contact
-                              </a>
-                         </nav>
-                         <div className="flex flex-col gap-3">
-                              {/* <Link href="/" className="py-2 px-4 rounded-lg bg-btGray font-medium text-sm text-gray-700 hover:bg-gray-300 transition">
-                                   Client Portal
-                              </Link> */}
-                              <Link href="/login" className="py-2 px-4 rounded-lg shadow font-medium text-sm text-gray-900 hover:bg-gray-100 transition">
-                                   Login
-                              </Link>
-                              <Link href="/register" className="py-2 px-4 rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 text-white font-medium text-sm hover:bg-blue-600 transition">
-                                   Shop Now
-                              </Link>
-                         </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="hidden gap-2.5 md:flex">
+              <Link href="/login" className="rounded-lg px-2.5 py-2 text-sm font-medium shadow">
+                Login
+              </Link>
+              <Link href="/register" className="rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 px-2.5 py-2 text-sm font-medium text-white">
+                Shop Now
+              </Link>
+            </div>
+          )}
+        </div>
+        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+      {isOpen && (
+        <div className="border-btGray flex h-50 flex-row items-start justify-between gap-6 rounded-b-lg border-t bg-gradient-to-b from-[#E0E7FF] to-white px-6 py-5 shadow-md md:hidden">
+          <nav className="flex flex-col gap-4">
+            {["Home", "How it Works", "Pricing"].map((item) => (
+              <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, "")}`} className="hover:text-btBlue text-base font-medium text-gray-800 transition-colors">
+                {item}
+              </a>
+            ))}
+            <a href="/contact" className="hover:text-btBlue text-base font-medium text-gray-800 transition-colors">
+              Contact
+            </a>
+          </nav>
+          {user ? (
+            <div className="border-btGray flex flex-row items-center gap-3 rounded-lg border px-2">
+              <button className="relative" aria-label="Cart">
+                <ShoppingCart size={20} className="cursor-pointer" />
+              </button>
+              <div className="relative" ref={dropdownRef}>
+                <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-1.5 p-1">
+                  <img src={user.photoURL} alt="User Avatar" width={20} height={20} className="rounded-full" />
+                  <span className="text-sm font-medium">{firstName}</span>
+                  {dropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+                {dropdownOpen && (
+                  <div className="absolute right-0 z-50 mt-2 w-30 rounded-xl bg-white">
+                    <div className="divide-btGray flex flex-col divide-y">
+                      <Link href="/orders" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
+                        <Image src="/orders.svg" width={16} height={16} alt="orders" />
+                        <span className="text-sm">Orders</span>
+                      </Link>
+                      <Link href="/inbox" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
+                        <Image src="/inbox.svg" width={16} height={16} alt="inbox" />
+                        <span className="text-sm">Inbox</span>
+                      </Link>
+                      <button onClick={handleLogout} className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 rounded-b-xl px-3 py-2">
+                        <Image src="/logout.svg" width={16} height={16} alt="logout" />
+                        <span className="text-sm">Logout</span>
+                      </button>
                     </div>
-               )}
-          </header>
-     );
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="hidden gap-2.5 md:flex">
+              <Link href="/login" className="rounded-lg px-2.5 py-2 text-sm font-medium shadow">
+                Login
+              </Link>
+              <Link href="/register" className="rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 px-2.5 py-2 text-sm font-medium text-white">
+                Shop Now
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+    </header>
+  );
 }

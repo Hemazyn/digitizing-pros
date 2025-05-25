@@ -46,7 +46,7 @@ export default function ContactPage() {
      return (
           <div className="flex flex-col min-h-screen bg-white">
                <Header />
-               <div className="flex flex-col justify-center w-full h-80 bg-headBg text-center">
+               <div className="flex flex-col justify-center w-full h-80 bg-headBg text-center px-3 md:px-0">
                     <h1 className="text-2xl md:text-3xl lg:text-[48px] font-semibold">Contact Us</h1>
                     <p className="text-btext">Have a question about our embroidery services? Get in touch with our team.</p>
                </div>
