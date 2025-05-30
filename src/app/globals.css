@@ -1,32 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-@import '@fontsource-variable/bricolage-grotesque';
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import "@fontsource-variable/bricolage-grotesque";
+
 @import "tailwindcss";
+
 @theme {
   --background: #ffffff;
-  --font-bricolage: 'Bricolage Grotesque Variable', sans-serif;
-  --color-btGray: #E5E5E5;
-  --color-btBlue: #4538CB;
+  --font-bricolage: "Bricolage Grotesque Variable", sans-serif;
+  --color-btGray: #e5e5e5;
+  --color-btBlue: #4538cb;
   --color-primary: #191919;
-  --color-gray: #6E6E6E;
-  --color-btext: #7D7D7D;
-  --color-cardBg: #FBFBFB;
-  --color-sLine: #E5E5E5;
-  --color-tLine: #EAEAEA;
-  --color-unavail: #B1B1B1;
-  --color-theadBg: #F8F8F8;
-  --color-success: #2ECC71;
-  --color-headBg: #EEEDFF;
+  --color-gray: #6e6e6e;
+  --color-btext: #7d7d7d;
+  --color-cardBg: #fbfbfb;
+  --color-sLine: #e5e5e5;
+  --color-tLine: #eaeaea;
+  --color-unavail: #b1b1b1;
+  --color-theadBg: #f8f8f8;
+  --color-success: #2ecc71;
+  --color-headBg: #eeedff;
 }
 
 html {
   scroll-behavior: smooth;
 }
-
+html,
 body {
   font-family: "Inter", sans-serif;
 }
+
 .bg-svg {
-  background-image: url('/vga-kinetic-export.svg');
+  background-image: url("/vga-kinetic-export.svg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -35,9 +38,9 @@ body {
   display: none;
 }
 .no-scrollbar {
-  -ms-overflow-style: none; 
-  scrollbar-width: none;  
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .tab-bg {
-  background: linear-gradient(90deg, #F3F2FF 49%, #F0EFFF 46%);
+  background: linear-gradient(90deg, #f3f2ff 49%, #f0efff 46%);
 }
