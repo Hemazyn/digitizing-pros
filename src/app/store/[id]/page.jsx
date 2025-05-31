@@ -7,6 +7,8 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { defaultPrice } from "../../constants";
+import Image from "next/image";
 
 export default function StoreItemPage() {
   const params = useParams();
@@ -69,6 +71,7 @@ export default function StoreItemPage() {
           .sort(() => 0.5 - Math.random())
           .slice(0, 4);
         setRelatedProducts(filteredRelated);
+        Loading.remove();
       } catch (err) {
         setError(err.message);
         Notify.failure(`Failed to load product details: ${err.message}`);
@@ -86,6 +89,14 @@ export default function StoreItemPage() {
 
   const handleQuantityChange = (change) => {
     setQuantity((prev) => Math.max(1, prev + change));
+  };
+
+  const calculateDisplayPrice = () => {
+    let price = parseFloat(resource.metadata?.price || defaultPrice);
+    if (selectedThreadType === "Silk (+$5.00)") {
+      price += 5.0;
+    }
+    return price.toFixed(2);
   };
 
   const isItemInCart = cartItems.some((item) => item.public_id === publicId && item.options.selectedHoopSize === selectedHoopSize && item.options.selectedThreadType === selectedThreadType);
@@ -144,20 +155,23 @@ export default function StoreItemPage() {
             Back to Store
           </Link>
           <div className="grid grid-cols-1 gap-8 bg-white md:grid-cols-10">
+            {/* Main Product Image & Thumbnails */}
             <div className="md:col-span-6">
-              <img src={mainDisplayImage || mainImagePlaceholder} alt={mainDisplayImage ? getDisplayTitle(resource) : "Loading image"} className="mb-4 h-auto w-full rounded-lg object-cover shadow-md" />
+              <Image src={mainDisplayImage || mainImagePlaceholder} alt={mainDisplayImage ? getDisplayTitle(resource) : "Loading image"} width={600} height={400} priority className="mb-4 h-auto w-full rounded-lg object-cover shadow-md" />
+              {/* Thumbnails */}
               <div className="flex space-x-2 overflow-x-auto pb-2">
                 {[...Array(4)].map((_, index) => (
                   <img key={index} src={resource?.secure_url || thumbnailPlaceholder} alt={resource?.secure_url ? `${getDisplayTitle(resource)} thumbnail ${index + 1}` : "Loading thumbnail"} className={`h-20 w-20 cursor-pointer rounded-md border-2 object-cover transition ${mainDisplayImage === resource?.secure_url ? "border-none" : "border-transparent"}`} />
                 ))}
               </div>
             </div>
+            {/* Product Details & Options */}
             <div className="space-y-5 md:col-span-4">
               <div className="space-y-5">
                 <div className="space-y-1">
                   <div className="space-y-1">
                     <h1 className="text-primary font-bricolage text-3xl font-bold">{getDisplayTitle(resource)}</h1>
-                    <p className="text-primary text-[20px] font-semibold">${resource.metadata?.price || "2.99"}</p>
+                    <p className="text-primary text-[20px] font-semibold">${calculateDisplayPrice()}</p>
                   </div>
                   <p className="text-btext text-sm">Create a stunning {getDisplayTitle(resource)} with this complete embroidery kit. Perfect for beginners and experienced crafters alike, this kit includes everything you need to create a beautiful piece of handmade art.</p>
                 </div>
@@ -213,10 +227,10 @@ export default function StoreItemPage() {
                     }}
                     className="cursor-pointer space-y-3 rounded-lg p-2 shadow transition hover:shadow-md">
                     <div className="relative aspect-square w-full overflow-hidden rounded-lg">
-                      <img src={product.secure_url || thumbnailPlaceholder} alt={product.secure_url ? getDisplayTitle(product) : "Loading product"} className="absolute inset-0 h-full w-full object-cover" />
+                      <Image src={product.secure_url || thumbnailPlaceholder} alt={product.secure_url ? getDisplayTitle(product) : "Loading product"} layout="fill" objectFit="cover" className="absolute inset-0 h-full w-full rounded-lg" />
                     </div>
                     <h3 className="text-primary overflow-hidden text-xs font-semibold text-ellipsis whitespace-nowrap">{getDisplayTitle(product)}</h3>
-                    <p className="text-primary text-base font-medium">${product.metadata?.price || "2.99"}</p>
+                    <p className="text-primary text-base font-medium">${parseFloat(product.metadata?.price || defaultPrice).toFixed(2)}</p>
                   </div>
                 ))}
               </div>

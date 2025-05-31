@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { fetchImagesFromCloudinary } from "../../constants/imageContent";
 import { fetchPdfsFromCloudinary } from "../../constants/pdfContent";
 import { Report, Loading } from "notiflix";
+import Image from "next/image";
+import { defaultPrice } from "../../constants";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -102,10 +104,12 @@ export default function Contents() {
 
       <div className="grid grid-cols-3 gap-4">
         {paginatedImages.map((image, idx) => (
-          <div key={idx} onClick={() => handleClickItem(image)} className="cursor-pointer space-y-3 rounded-lg p-2 shadow transition hover:shadow-md">
-            <img src={image.secure_url} alt={getDisplayTitle(image)} height={228} className="w-fit rounded-lg" />
+          <div key={idx} onClick={() => handleClickItem(image)} className="cursor-pointer space-y-3 rounded-[16px] p-2 shadow transition hover:shadow-md">
+            <div className="relative aspect-square w-full overflow-hidden rounded-lg">
+              <Image src={image.secure_url} alt={getDisplayTitle(image)} layout="fill" objectFit="cover" className="rounded-lg" />
+            </div>
             <h3 className="text-primary overflow-hidden text-xs font-semibold text-ellipsis whitespace-nowrap">{getDisplayTitle(image)}</h3>
-            <p className="text-primary text-base font-medium">$2.99</p>
+            <p className="text-primary text-base font-medium">${parseFloat(image.metadata?.price || defaultPrice).toFixed(2)}</p>
           </div>
         ))}
       </div>
