@@ -38,3 +38,5 @@ export const features = [
           description: "Get around the clock assistance for all needs. We're here to help you anytime, day or night.",
      },
 ];
+
+export const defaultPrice = 2.99;

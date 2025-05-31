@@ -113,9 +113,15 @@ export default function Header({ className = "" }) {
             </div>
           )}
         </div>
-        <button className="cursor-pointer md:hidden" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex flex-row items-center gap-4 md:hidden">
+          <Link href="/store/cart" className="relative" aria-label="Cart">
+            <ShoppingCart size={20} className="cursor-pointer" />
+            {totalItemsInCart > 0 && <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{totalItemsInCart}</span>}
+          </Link>
+          <button className="cursor-pointer md:hidden" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
       {isOpen && (
         <div className="border-btGray flex h-50 flex-row items-start justify-between gap-6 rounded-b-lg border-t bg-gradient-to-b from-[#E0E7FF] to-white px-6 py-5 shadow-md md:hidden">
@@ -131,10 +137,6 @@ export default function Header({ className = "" }) {
           </nav>
           {user ? (
             <div className="border-btGray flex flex-row items-center gap-3 rounded-lg border px-2">
-              <Link href="/cart" className="relative" aria-label="Cart">
-                <ShoppingCart size={20} className="cursor-pointer" />
-                {totalItemsInCart > 0 && <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{totalItemsInCart}</span>}
-              </Link>
               <div className="relative" ref={dropdownRef}>
                 <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-1.5 p-1">
                   <img src={user.photoURL} alt="User Avatar" width={20} height={20} className="rounded-full" />
