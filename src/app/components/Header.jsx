@@ -8,6 +8,8 @@ import { useCart } from "@/context/CartContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/firebase";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Notify } from "notiflix";
 
 export default function Header({ className = "" }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,10 +17,12 @@ export default function Header({ className = "" }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user } = useAuth();
   const { totalItemsInCart } = useCart();
+  const router = useRouter();
 
-  const firstName = user?.displayName?.split(" ")[0] || "User";
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const handleScroll = () => {
       if (window.scrollY > 10) {
         setScrolled(true);
@@ -31,8 +35,14 @@ export default function Header({ className = "" }) {
   }, []);
 
   const handleLogout = async () => {
-    await signOut(auth);
+    try {
+      await signOut(auth);
+      router.push("/login");
+    } catch (error) {
+      Notify.failure("Error signing out:", error);
+    }
   };
+
   const dropdownRef = useRef();
   useEffect(() => {
     function handleClickOutside(event) {
@@ -46,6 +56,8 @@ export default function Header({ className = "" }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const firstName = user?.displayName?.split(" ")[0] || "User";
 
   return (
     <header className={`fixed z-50 w-full transition-colors duration-300 ${scrolled ? "border-btGray border-b bg-white" : "bg-transparent"} ${className}`}>
@@ -70,11 +82,11 @@ export default function Header({ className = "" }) {
             <div className="flex flex-row items-center gap-5">
               <Link href="/store/cart" className="relative" aria-label="Cart">
                 <ShoppingCart size={20} className="cursor-pointer" />
-                {totalItemsInCart > 0 && <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{totalItemsInCart}</span>}
+                {isClient && totalItemsInCart > 0 && <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{totalItemsInCart}</span>}
               </Link>
               <div className="relative" ref={dropdownRef}>
                 <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-1.5 p-1">
-                  <img src={user.photoURL} alt="Avatar" width={20} height={20} className="rounded-full" />
+                  {user.photoURL && <img src={user.photoURL} alt="Avatar" width={20} height={20} className="rounded-full" />}
                   <span className="cursor-pointer text-sm font-medium">{firstName}</span>
                   {dropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
@@ -85,9 +97,9 @@ export default function Header({ className = "" }) {
                         <Image src="/home.svg" width={16} height={16} alt="dashboard" />
                         <span className="text-sm">Dashboard</span>
                       </Link>
-                      <Link href="dashboard/orders" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
+                      <Link href="/store" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
                         <Image src="/orders.svg" width={16} height={16} alt="orders" />
-                        <span className="text-sm">Orders</span>
+                        <span className="text-sm">Store</span>
                       </Link>
                       <Link href="dashboard/inbox" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
                         <Image src="/inbox.svg" width={16} height={16} alt="inbox" />
@@ -116,7 +128,7 @@ export default function Header({ className = "" }) {
         <div className="flex flex-row items-center gap-4 md:hidden">
           <Link href="/store/cart" className="relative" aria-label="Cart">
             <ShoppingCart size={20} className="cursor-pointer" />
-            {totalItemsInCart > 0 && <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{totalItemsInCart}</span>}
+            {isClient && totalItemsInCart > 0 && <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{totalItemsInCart}</span>}
           </Link>
           <button className="cursor-pointer md:hidden" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -139,7 +151,7 @@ export default function Header({ className = "" }) {
             <div className="border-btGray flex flex-row items-center gap-3 rounded-lg border px-2">
               <div className="relative" ref={dropdownRef}>
                 <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-1.5 p-1">
-                  <img src={user.photoURL} alt="User Avatar" width={20} height={20} className="rounded-full" />
+                  {user.photoURL && <img src={user.photoURL} alt="User Avatar" width={20} height={20} className="rounded-full" />}
                   <span className="text-sm font-medium">{firstName}</span>
                   {dropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>

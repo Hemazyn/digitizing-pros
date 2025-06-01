@@ -1,86 +1,168 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { getCartItemsFromFirestore, saveCartItemToFirestore, removeCartItemFromFirestore, clearUserCartInFirestore } from "../firebase/firestore";
+import { useAuth } from "@/context/AuthContext";
 import { defaultPrice } from "../app/constants";
+import { Notify } from "notiflix";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-     const [cartItems, setCartItems] = useState(() => {
-          if (typeof window !== 'undefined') {
-               const savedCart = localStorage.getItem('cartItems');
-               return savedCart ? JSON.parse(savedCart) : [];
+  const { user } = useAuth();
+  const [cartItems, setCartItems] = useState([]);
+  const totalItemsInCart = cartItems.length;
+
+  useEffect(() => {
+    const loadCart = async () => {
+      if (user) {
+        try {
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("cartItems");
           }
-          return [];
-     });
+          const firestoreItems = await getCartItemsFromFirestore(user.uid);
+          setCartItems(firestoreItems);
+        } catch (error) {
+          console.error("Failed to load cart from Firestore:", error);
+        }
+      } else {
+        setCartItems([]);
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("cartItems");
+        }
+      }
+    };
+    loadCart();
+  }, [user]);
 
-     useEffect(() => {
-          if (typeof window !== 'undefined') {
-               localStorage.setItem('cartItems', JSON.stringify(cartItems));
-          }
-     }, [cartItems]);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    }
+  }, [cartItems]);
 
-     const addToCart = (product, quantity, options) => {
-          setCartItems((prevItems) => {
-               const existingItemIndex = prevItems.findIndex(
-                    (item) =>
-                         item.public_id === product.public_id &&
-                         JSON.stringify(item.options) === JSON.stringify(options)
-               );
+  const addToCart = async (productResource, quantity, options) => {
+    if (!user) {
+      Notify.info("Please log in to add items to your cart.");
+      return;
+    }
 
-               if (existingItemIndex > -1) {
-                    const updatedItems = [...prevItems];
-                    updatedItems[existingItemIndex].quantity += quantity;
-                    return updatedItems;
-               } else {
-                    return [...prevItems, { ...product, quantity, options }];
-               }
-          });
-     };
+    const clientLogicalKey = `${productResource.public_id}-${options?.selectedHoopSize}-${options?.selectedThreadType}`;
 
-     const removeFromCart = (publicId, options) => {
-          setCartItems((prevItems) =>
-               prevItems.filter(
-                    (item) =>
-                         !(item.public_id === publicId && JSON.stringify(item.options) === JSON.stringify(options))
-               )
-          );
-     };
+    const existingItem = cartItems.find((i) => `${i.public_id}-${i.options?.selectedHoopSize}-${i.options?.selectedThreadType}` === clientLogicalKey);
 
-     const updateCartItemQuantity = (publicId, options, newQuantity) => {
-          setCartItems((prevItems) =>
-               prevItems.map((item) =>
-                    item.public_id === publicId && JSON.stringify(item.options) === JSON.stringify(options)
-                         ? { ...item, quantity: Math.max(1, newQuantity) }
-                         : item
-               )
-          );
-     };
+    try {
+      let itemToSaveToFirestore;
+      let newFirestoreId = null;
 
-     const clearCart = () => {
-          setCartItems([]);
-     };
+      if (existingItem) {
+        const newQuantity = existingItem.quantity + quantity;
+        itemToSaveToFirestore = { ...existingItem, quantity: newQuantity };
+        newFirestoreId = await saveCartItemToFirestore(user.uid, itemToSaveToFirestore);
 
-     const totalItemsInCart = cartItems.length;
+        setCartItems((prev) => prev.map((item) => (item.id === existingItem.id ? { ...item, quantity: newQuantity } : item)));
+      } else {
+        const newItem = { ...productResource, quantity: quantity, options: options };
+        newFirestoreId = await saveCartItemToFirestore(user.uid, newItem);
 
-     const cartTotalPrice = cartItems.reduce((total, item) => {
-          const itemPrice = parseFloat(item.metadata?.price || defaultPrice);
-          let optionPriceAdjustment = 0;
-          if (item.options?.selectedThreadType === "Silk (+$5.00)") {
-               optionPriceAdjustment = 5;
-          }
-          return total + (itemPrice + optionPriceAdjustment) * item.quantity;
-     }, 0);
+        setCartItems((prev) => [...prev, { ...newItem, id: newFirestoreId }]);
+      }
+    } catch (error) {
+      console.error("Error adding/updating cart item:", error);
+      Notify.failure("Failed to add item to cart. Please try again.");
+    }
+  };
 
+  const removeFromCart = async (publicId, options) => {
+    if (!user) {
+      Notify.info("Please log in to manage your cart.");
+      return;
+    }
 
-     const value = { cartItems, addToCart, removeFromCart, updateCartItemQuantity, clearCart, totalItemsInCart, cartTotalPrice };
+    const itemToRemove = cartItems.find((item) => item.public_id === publicId && item.options?.selectedHoopSize === options?.selectedHoopSize && item.options?.selectedThreadType === options?.selectedThreadType);
 
-     return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+    if (!itemToRemove) {
+      console.warn("Attempted to remove item not found in cart state:", publicId, options);
+      return;
+    }
+
+    try {
+      if (itemToRemove.id) {
+        await removeCartItemFromFirestore(user.uid, itemToRemove.id);
+      }
+      setCartItems((prev) => prev.filter((item) => item.id !== itemToRemove.id));
+    } catch (error) {
+      console.error("Error removing cart item:", error);
+      Notify.failure("Failed to remove item from cart. Please try again.");
+    }
+  };
+
+  const updateCartItemQuantity = async (publicId, options, newQuantity) => {
+    if (!user) {
+      Notify.info("Please log in to manage your cart.");
+      return;
+    }
+
+    const clientLogicalKey = `${publicId}-${options?.selectedHoopSize}-${options?.selectedThreadType}`;
+
+    const itemToUpdate = cartItems.find((item) => `${item.public_id}-${item.options?.selectedHoopSize}-${item.options?.selectedThreadType}` === clientLogicalKey);
+
+    if (!itemToUpdate || !itemToUpdate.id) {
+      console.warn("Attempted to update quantity for item not found or without Firestore ID:", publicId, options);
+      return;
+    }
+
+    const quantityToSet = Math.max(0, newQuantity);
+
+    try {
+      if (quantityToSet === 0) {
+        await removeCartItemFromFirestore(user.uid, itemToUpdate.id);
+        setCartItems((prev) => prev.filter((item) => item.id !== itemToUpdate.id));
+        Notify.info(`Quantity for ${publicId.split("/").pop()} set to 0. Item removed.`);
+      } else {
+        await saveCartItemToFirestore(user.uid, { ...itemToUpdate, quantity: quantityToSet });
+        setCartItems((prev) => prev.map((item) => (item.id === itemToUpdate.id ? { ...item, quantity: quantityToSet } : item)));
+        Notify.success(`Quantity for ${publicId.split("/").pop()} updated to ${quantityToSet}.`);
+      }
+    } catch (error) {
+      console.error("Error updating cart item quantity:", error);
+      Notify.failure("Failed to update item quantity. Please try again.");
+    }
+  };
+
+  const clearCart = async () => {
+    if (!user) {
+      Notify.info("Please log in to clear your cart.");
+      return;
+    }
+    try {
+      await clearUserCartInFirestore(user.uid);
+      setCartItems([]);
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("cartItems");
+      }
+      Notify.success("Your cart has been cleared!");
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+      Notify.failure("Failed to clear cart. Please try again.");
+    }
+  };
+
+  const cartTotalPrice = cartItems.reduce((acc, item) => {
+    const itemPrice = parseFloat(item.metadata?.price || defaultPrice);
+    let optionPriceAdjustment = 0;
+    if (item.options?.selectedThreadType === "Silk (+$5.00)") {
+      optionPriceAdjustment = 5;
+    }
+    return acc + (itemPrice + optionPriceAdjustment) * item.quantity;
+  }, 0);
+
+  return <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateCartItemQuantity, clearCart, totalItemsInCart, cartTotalPrice }}>{children}</CartContext.Provider>;
 }
 
 export function useCart() {
-     const context = useContext(CartContext);
-     if (context === undefined) {
-          throw new Error("useCart must be used within a CartProvider");
-     }
-     return context;
+  const context = useContext(CartContext);
+  if (context === undefined) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
+  return context;
 }

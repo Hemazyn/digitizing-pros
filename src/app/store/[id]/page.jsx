@@ -1,5 +1,6 @@
+// app/store/[id]/page.js
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Notify, Loading } from "notiflix";
 import { fetchImagesFromCloudinary } from "../../constants/imageContent";
@@ -7,6 +8,7 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useUserPreferences } from "@/context/UserPreferencesContext";
 import { defaultPrice } from "../../constants";
 import Image from "next/image";
 
@@ -24,6 +26,11 @@ export default function StoreItemPage() {
   const [selectedHoopSize, setSelectedHoopSize] = useState('4"');
   const [selectedThreadType, setSelectedThreadType] = useState("Cotton");
   const [quantity, setQuantity] = useState(1);
+
+  const { getItemPreferences, updateItemPreferences, preferencesLoading } = useUserPreferences();
+  const isInitialPrefLoad = React.useRef(true);
+
+  const getProductPrefsKey = useCallback((id) => `product_prefs_${id}`, []);
 
   const getDisplayTitle = (resource) => {
     if (!resource) return "Untitled Item";
@@ -50,8 +57,17 @@ export default function StoreItemPage() {
   };
 
   useEffect(() => {
-    if (!publicId) return;
+    if (publicId && !preferencesLoading && resource && isInitialPrefLoad.current) {
+      const itemPrefs = getItemPreferences(publicId);
+      if (itemPrefs.hoopSize) setSelectedHoopSize(itemPrefs.hoopSize);
+      if (itemPrefs.threadType) setSelectedThreadType(itemPrefs.threadType);
+      if (itemPrefs.qty) setQuantity(itemPrefs.qty);
+      isInitialPrefLoad.current = false;
+    }
+  }, [publicId, preferencesLoading, getItemPreferences, resource]);
 
+  useEffect(() => {
+    if (!publicId) return;
     const fetchDetails = async () => {
       Loading.dots("Loading product details...");
       try {
@@ -87,6 +103,15 @@ export default function StoreItemPage() {
     };
   }, [publicId]);
 
+  useEffect(() => {
+    const itemInCartWithSelectedOptions = cartItems.find((item) => item.public_id === publicId && item.options?.selectedHoopSize === selectedHoopSize && item.options?.selectedThreadType === selectedThreadType);
+    if (itemInCartWithSelectedOptions) {
+      setQuantity(itemInCartWithSelectedOptions.quantity);
+    } else {
+      setQuantity(1);
+    }
+  }, [cartItems, publicId, selectedHoopSize, selectedThreadType]);
+
   const handleQuantityChange = (change) => {
     setQuantity((prev) => Math.max(1, prev + change));
   };
@@ -99,7 +124,7 @@ export default function StoreItemPage() {
     return price.toFixed(2);
   };
 
-  const isItemInCart = cartItems.some((item) => item.public_id === publicId && item.options.selectedHoopSize === selectedHoopSize && item.options.selectedThreadType === selectedThreadType);
+  const isItemInCart = cartItems.some((item) => item.public_id === publicId && item.options?.selectedHoopSize === selectedHoopSize && item.options?.selectedThreadType === selectedThreadType);
 
   const handleToggleCart = () => {
     if (!resource) {
@@ -107,14 +132,11 @@ export default function StoreItemPage() {
       return;
     }
 
-    const options = {
-      selectedHoopSize,
-      selectedThreadType,
-    };
+    const options = { selectedHoopSize, selectedThreadType };
 
     if (isItemInCart) {
       removeFromCart(resource.public_id, options);
-      Notify.info(`${quantity} x ${getDisplayTitle(resource)} removed from cart!`);
+      Notify.info(`${getDisplayTitle(resource)} removed from cart!`);
     } else {
       addToCart(resource, quantity, options);
       Notify.success(`${quantity} x ${getDisplayTitle(resource)} added to cart!`);
@@ -158,7 +180,6 @@ export default function StoreItemPage() {
             {/* Main Product Image & Thumbnails */}
             <div className="md:col-span-6">
               <Image src={mainDisplayImage || mainImagePlaceholder} alt={mainDisplayImage ? getDisplayTitle(resource) : "Loading image"} width={600} height={400} priority className="mb-4 h-auto w-full rounded-lg object-cover shadow-md" />
-              {/* Thumbnails */}
               <div className="flex space-x-2 overflow-x-auto pb-2">
                 {[...Array(4)].map((_, index) => (
                   <img key={index} src={resource?.secure_url || thumbnailPlaceholder} alt={resource?.secure_url ? `${getDisplayTitle(resource)} thumbnail ${index + 1}` : "Loading thumbnail"} className={`h-20 w-20 cursor-pointer rounded-md border-2 object-cover transition ${mainDisplayImage === resource?.secure_url ? "border-none" : "border-transparent"}`} />

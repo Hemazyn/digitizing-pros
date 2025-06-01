@@ -2,7 +2,7 @@ import Image from "next/image";
 import Logo from "./components/Logo";
 import Header from "./components/Header";
 import Main from "./components/Main";
-import { steps } from "@/app/constants";
+import { steps } from "../app/constants/index";
 import WhyChooseUs from "./components/WhyChooseUs";
 import PricingSection from "./components/PricingSection";
 import FileTypes from "./components/FileTypes";

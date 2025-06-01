@@ -9,6 +9,7 @@ import { Search } from "lucide-react";
 import Footer from "../components/Footer";
 import Aside from "./components/Aside";
 import Contents from "./components/Contents";
+import Link from "next/link";
 
 export default function StorePage() {
   const { user, loading } = useAuth();
@@ -20,7 +21,16 @@ export default function StorePage() {
     }
   }, [user, loading]);
 
-  if (!user) return <h1>Welcome Buddy!</h1>;
+  if (!user) {
+    return (
+      <div className="bg-svg flex min-h-screen w-full flex-col items-center justify-center space-y-1.5">
+        <h1 className="font-bricolage text-primary text-3xl">Welcome Buddy!</h1>
+        <Link href="/login" className="text-primary hover:text-btBlue flex items-center">
+          <p className="text-btBlue text-lg font-semibold">Please log in to access the store.</p>
+        </Link>
+      </div>
+    );
+  }
 
   const displayInitial = user.displayName ? user.displayName.charAt(0).toUpperCase() : "?";
   const firstName = user.displayName ? user.displayName.split(" ")[0] : "?";
