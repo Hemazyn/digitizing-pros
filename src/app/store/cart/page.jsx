@@ -1,17 +1,37 @@
+// app/cart/page.js
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "../../../context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { defaultPrice } from "../../constants";
 import { Notify } from "notiflix";
 
 export default function CartPage() {
-  const { cartItems, updateCartItemQuantity, removeFromCart, cartTotalPrice } = useCart();
+  const { cartItems, updateCartItemQuantity, removeFromCart, totalItemsInCart, cartTotalPrice } = useCart();
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+
   const shippingCost = 4.0;
   const taxRate = 0.07;
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient && !authLoading) {
+      if (!user) {
+        router.push("/login");
+      }
+    }
+  }, [user, authLoading, router, isClient]);
 
   const subtotal = cartItems.reduce((sum, item) => {
     const itemPrice = parseFloat(item.metadata?.price || defaultPrice);
@@ -45,46 +65,62 @@ export default function CartPage() {
       }
       return filenameParts.join(".").replace(/-/g, " ");
     }
-
     return "Untitled Item";
   };
 
   const handlePayButtonClick = (event) => {
-    event.preventDefault(); // This line prevents the default form submission
+    event.preventDefault();
     Notify.info("Stripe payment not yet in place");
   };
+
+  if (!isClient || authLoading || !user) {
+    return (
+      <>
+        <Header />
+        <main className="bg-svg p8 pt16 flex h-screen flex-col items-center justify-center">
+          <p className="font-bricolage text-primary text-3xl">{isClient && !authLoading && !user ? "Redirecting to login..." : "Loading cart page..."}</p>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
       <Header className="border-btGray border-b" />
-      <main className="bg-gray50 min-h-screen flex-1 pt-16">
-        <div className="container mx-auto p-4 md:p-8">
-          <Link href="/store" className="text-primary hover:text-btBlue mb-4 flex cursor-pointer items-center">
-            <img src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
-            Back to Store
+      {cartItems.length === 0 ? (
+        <div className="bg-svg flex h-screen w-full flex-col items-center justify-center text-center">
+          <p className="font-bricolage text-primary text-3xl font-semibold">Your cart is empty.</p>
+          <Link href="/store" className="text-primary hover:text-btBlue mt-4 flex items-center">
+            <img src="/arrow-left.svg" alt="Continue Shopping" width={16} height={16} className="mr-2 inline-block" />
+            Continue Shopping
           </Link>
-
-          {cartItems.length === 0 ? (
-            <div className="flex min-h-[50vh] items-center justify-center">
-              <p className="text-primary text-3xl font-semibold">Your cart is empty.</p>
-            </div>
-          ) : (
+        </div>
+      ) : (
+        <main className="min-h-screen flex-1">
+          <div className="container mx-auto mt-10 p-4 md:p-8">
+            <Link href="/store" className="text-primary hover:text-btBlue mb-4 flex cursor-pointer items-center">
+              <img src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
+              Back to Store
+            </Link>
             <div className="flex flex-col gap-8 md:flex-row">
               {/* Left Side: Shopping Cart List */}
               <div className="flex flex-col md:w-3/5">
-                <h2 className="text-primary mb-2 text-2xl font-bold">Shopping Cart</h2>
+                <h2 className="text-primary mb-4 text-2xl font-bold">Shopping Cart ({totalItemsInCart})</h2>
                 <div className="bg-none">
                   <div className="space-y-4">
                     {cartItems.map((item) => (
-                      <div key={`${item.public_id}-${JSON.stringify(item.options)}`} className="flex items-start gap-5 rounded-[16px] p-2 shadow">
+                      <div key={`${item.public_id}-${item.options?.selectedHoopSize}-${item.options?.selectedThreadType}`} className="flex items-start gap-5 rounded-[16px] p-2 shadow">
                         <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg">
                           <Image src={item.secure_url || "/images/placeholder.jpg"} alt={getDisplayTitle(item)} layout="fill" objectFit="cover" className="rounded-lg" />
                         </div>
                         <div className="flex w-full flex-col space-y-2.5">
                           <div className="flex flex-row items-start justify-between">
                             <div className="flex-grow space-y-2.5">
-                              <h3 className="text-primary font-bricolage text-2xl font-bold">{getDisplayTitle(item)}</h3>
-                              <p className="text-primary text-xl font-semibold">${defaultPrice}</p>
+                              <Link className="cursor-pointer" href={`/store/${item.public_id}`}>
+                                <h3 className="text-primary hover:text-btBlue font-bricolage text-2xl font-bold">{getDisplayTitle(item)}</h3>
+                              </Link>
+                              <p className="text-primary text-xl font-semibold">${(parseFloat(item.metadata?.price || defaultPrice) + (item.options?.selectedThreadType === "Silk (+$5.00)" ? 5 : 0)).toFixed(2)}</p>
                               <div className="space-y-2">
                                 <p className="text-btext text-sm font-medium">Hoop Size: {item.options?.selectedHoopSize}</p>
                                 <p className="text-btext text-sm font-medium">Thread Type: {item.options?.selectedThreadType}</p>
@@ -174,9 +210,9 @@ export default function CartPage() {
                 </div>
               </div>
             </div>
-          )}
-        </div>
-      </main>
+          </div>
+        </main>
+      )}
       <Footer />
     </>
   );
