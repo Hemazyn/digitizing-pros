@@ -1,25 +1,38 @@
-// app/cart/page.js
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import OrderConfirm from "./component/OrderConfirm";
 import Image from "next/image";
 import Link from "next/link";
+import Form from "next/form";
 import { useCart } from "../../../context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { defaultPrice } from "../../constants";
-import { Notify } from "notiflix";
+import { Notify, Loading } from "notiflix";
+import { loadStripe } from "@stripe/stripe-js";
 
 export default function CartPage() {
   const { cartItems, updateCartItemQuantity, removeFromCart, totalItemsInCart, cartTotalPrice } = useCart();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
-  const shippingCost = 4.0;
+  const shippingCost = 0.0;
   const taxRate = 0.07;
 
   const [isClient, setIsClient] = useState(false);
+  // order confirm
+  const searchParams = useSearchParams();
+  const showOrderConfirm = searchParams.get("success") === "true";
+
+  useEffect(() => {
+    if (searchParams?.get("canceled") === "true") {
+      Notify.failure("Order not successful", { timeout: 3000 });
+      router.replace("/store/cart");
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     setIsClient(true);
@@ -68,9 +81,39 @@ export default function CartPage() {
     return "Untitled Item";
   };
 
-  const handlePayButtonClick = (event) => {
+  const handlePayButtonClick = async (event) => {
     event.preventDefault();
-    Notify.info("Stripe payment not yet in place");
+    const stripe = await stripePromise;
+
+    try {
+      const response = await fetch("/api/payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cartItems }),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error("Payment error response:", text);
+        Notify.failure("Failed to initiate payment.");
+        return;
+      }
+
+      const data = await response.json();
+
+      Loading.dots("Please wait while we process your payment...");
+
+      if (data.id) {
+        stripe.redirectToCheckout({ sessionId: data.id });
+      } else {
+        Notify.failure("Failed to create checkout session.");
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      Notify.failure("An unexpected error occurred.");
+    }
   };
 
   if (!isClient || authLoading || !user) {
@@ -177,12 +220,12 @@ export default function CartPage() {
                       <h3 className="text-primary text-xl font-semibold">Payment Details</h3>
                       <span className="text-btext text-sm font-medium">Complete your purchase by providing your payment details</span>
                     </div>
-                    <form className="space-y-4">
+                    <Form className="space-y-4">
                       <div className="flex flex-col space-y-1.5">
                         <label htmlFor="email" className="text-primary text-sm font-medium">
                           Email Address
                         </label>
-                        <input type="email" id="email" placeholder="sidaibruma@gmail.com" className="border-btGray text-btext w-full rounded-md border p-3 text-sm ring-0 outline-0" />
+                        <input type="email" id="email" placeholder="sidaibruma@gmail.com" className="border-btGray text-primary placeholder:text-btext w-full rounded-md border p-3 text-sm ring-0 outline-0" autoComplete="true" />
                       </div>
                       <div className="flex flex-col space-y-1.5">
                         <label htmlFor="shippingAddress" className="text-primary text-sm font-medium">
@@ -191,8 +234,9 @@ export default function CartPage() {
                         <textarea
                           id="shippingAddress"
                           rows="3"
+                          autoComplete="true"
                           placeholder="123 Queens Road, Suite 101&#10;Neville, CA 90210&#10;United States"
-                          className="border-btGray text-btext w-full rounded-md border p-3 text-sm ring-0 outline-0"></textarea>
+                          className="border-btGray text-primary placeholder:text-btext w-full rounded-md border p-3 text-sm ring-0 outline-0"></textarea>
                       </div>
                       <div className="flex flex-col space-y-1.5">
                         <label htmlFor="paymentMethod" className="text-primary text-sm font-medium">
@@ -205,12 +249,17 @@ export default function CartPage() {
                       <button type="button" onClick={handlePayButtonClick} className="w-full cursor-pointer rounded-lg bg-gradient-to-r from-[#372DA2] to-[#5749E9] py-3 text-sm font-medium text-white">
                         Pay ${total.toFixed(2)}
                       </button>
-                    </form>
+                    </Form>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          {showOrderConfirm && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60">
+              <OrderConfirm />
+            </div>
+          )}
         </main>
       )}
       <Footer />
