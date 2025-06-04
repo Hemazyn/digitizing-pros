@@ -1,4 +1,3 @@
-// app/store/[id]/page.js
 "use client";
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -11,8 +10,11 @@ import { useCart } from "@/context/CartContext";
 import { useUserPreferences } from "@/context/UserPreferencesContext";
 import { defaultPrice } from "../../constants";
 import Image from "next/image";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../../firebase/firebase";
 
 export default function StoreItemPage() {
+  const [user, setUser] = useState(null);
   const params = useParams();
   const publicId = params.id;
   const router = useRouter();
@@ -23,14 +25,20 @@ export default function StoreItemPage() {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [mainDisplayImage, setMainDisplayImage] = useState("");
 
-  const [selectedHoopSize, setSelectedHoopSize] = useState('4"');
-  const [selectedThreadType, setSelectedThreadType] = useState("Cotton");
   const [quantity, setQuantity] = useState(1);
 
   const { getItemPreferences, updateItemPreferences, preferencesLoading } = useUserPreferences();
   const isInitialPrefLoad = React.useRef(true);
 
   const getProductPrefsKey = useCallback((id) => `product_prefs_${id}`, []);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const getDisplayTitle = (resource) => {
     if (!resource) return "Untitled Item";
@@ -59,8 +67,6 @@ export default function StoreItemPage() {
   useEffect(() => {
     if (publicId && !preferencesLoading && resource && isInitialPrefLoad.current) {
       const itemPrefs = getItemPreferences(publicId);
-      if (itemPrefs.hoopSize) setSelectedHoopSize(itemPrefs.hoopSize);
-      if (itemPrefs.threadType) setSelectedThreadType(itemPrefs.threadType);
       if (itemPrefs.qty) setQuantity(itemPrefs.qty);
       isInitialPrefLoad.current = false;
     }
@@ -104,13 +110,13 @@ export default function StoreItemPage() {
   }, [publicId]);
 
   useEffect(() => {
-    const itemInCartWithSelectedOptions = cartItems.find((item) => item.public_id === publicId && item.options?.selectedHoopSize === selectedHoopSize && item.options?.selectedThreadType === selectedThreadType);
-    if (itemInCartWithSelectedOptions) {
-      setQuantity(itemInCartWithSelectedOptions.quantity);
+    const itemInCart = cartItems.find((item) => item.public_id === publicId);
+    if (itemInCart) {
+      setQuantity(itemInCart.quantity);
     } else {
       setQuantity(1);
     }
-  }, [cartItems, publicId, selectedHoopSize, selectedThreadType]);
+  }, [cartItems, publicId]);
 
   const handleQuantityChange = (change) => {
     setQuantity((prev) => Math.max(1, prev + change));
@@ -118,21 +124,24 @@ export default function StoreItemPage() {
 
   const calculateDisplayPrice = () => {
     let price = parseFloat(resource.metadata?.price || defaultPrice);
-    if (selectedThreadType === "Silk (+$5.00)") {
-      price += 5.0;
-    }
+
     return price.toFixed(2);
   };
 
-  const isItemInCart = cartItems.some((item) => item.public_id === publicId && item.options?.selectedHoopSize === selectedHoopSize && item.options?.selectedThreadType === selectedThreadType);
+  const isItemInCart = cartItems.some((item) => item.public_id === publicId);
 
   const handleToggleCart = () => {
+    if (!user) {
+      Notify.failure("Please sign in to manage your cart.");
+      return;
+    }
+
     if (!resource) {
       Notify.warning("Product details not loaded yet.");
       return;
     }
 
-    const options = { selectedHoopSize, selectedThreadType };
+    const options = {};
 
     if (isItemInCart) {
       removeFromCart(resource.public_id, options);
@@ -196,42 +205,18 @@ export default function StoreItemPage() {
                   </div>
                   <p className="text-btext text-sm">Create a stunning {getDisplayTitle(resource)} with this complete embroidery kit. Perfect for beginners and experienced crafters alike, this kit includes everything you need to create a beautiful piece of handmade art.</p>
                 </div>
-                <div className="space-y-3 md:space-y-7">
-                  <div className="space-y-0 md:space-y-2.5">
-                    <h3 className="text-lg font-semibold text-gray-800">Hoop Size</h3>
-                    <div className="flex space-x-3">
-                      {['4"', '6"', '8"'].map((size) => (
-                        <label key={size} className="flex cursor-pointer items-center space-x-2">
-                          <input type="radio" name="hoopSize" value={size} checked={selectedHoopSize === size} onChange={() => setSelectedHoopSize(size)} className="form-radio h-4 w-4 cursor-pointer accent-black" />
-                          <span className="text-gray-700">{size}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="space-y-0 md:space-y-2.5">
-                    <h3 className="text-lg font-semibold text-gray-800">Thread Type</h3>
-                    <div className="flex space-x-3">
-                      {["Cotton", "Silk (+$5.00)"].map((type) => (
-                        <label key={type} className="flex cursor-pointer items-center space-x-2">
-                          <input type="radio" name="threadType" value={type} checked={selectedThreadType === type} onChange={() => setSelectedThreadType(type)} className="form-radio h-4 w-4 cursor-pointer accent-black" />
-                          <span className="text-gray-700">{type}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <button onClick={() => handleQuantityChange(-1)} className="cursor-pointer rounded-md border border-gray-300 px-3 py-1 text-gray-700 hover:bg-gray-100">
-                      -
-                    </button>
-                    <span className="text-xl font-medium">{quantity}</span>
-                    <button onClick={() => handleQuantityChange(1)} className="cursor-pointer rounded-md border border-gray-300 px-3 py-1 text-gray-700 hover:bg-gray-100">
-                      +
-                    </button>
-                  </div>
+                <div className="flex items-center space-x-4">
+                  <button onClick={() => handleQuantityChange(-1)} className="cursor-pointer rounded-md border border-gray-300 px-3 py-1 text-gray-700 hover:bg-gray-100">
+                    -
+                  </button>
+                  <span className="text-xl font-medium">{quantity}</span>
+                  <button onClick={() => handleQuantityChange(1)} className="cursor-pointer rounded-md border border-gray-300 px-3 py-1 text-gray-700 hover:bg-gray-100">
+                    +
+                  </button>
                 </div>
               </div>
-              <button onClick={handleToggleCart} className={`w-full rounded-md py-3 text-lg font-semibold text-white transition ${isItemInCart ? "bg-red-600 hover:bg-red-700" : "bg-btBlue hover:bg-btBlue/90 cursor-pointer"}`}>
-                {isItemInCart ? "Remove from Cart" : "Add to Cart"}
+              <button disabled={!user} onClick={handleToggleCart} className={`w-full rounded-md py-3 text-lg font-semibold text-white transition ${isItemInCart ? "bg-red-600 hover:bg-red-700" : "bg-btBlue hover:bg-btBlue/90"} ${!user && "cursor-not-allowed opacity-50"}`}>
+                {isItemInCart ? "Remove from Cart" : user ? "Add to Cart" : "Login to Add"}
               </button>
             </div>
           </div>

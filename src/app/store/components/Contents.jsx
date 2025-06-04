@@ -9,7 +9,7 @@ import { defaultPrice } from "../../constants";
 
 const ITEMS_PER_PAGE = 12;
 
-export default function Contents() {
+export default function Contents({ searchTerm }) {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [images, setImages] = useState([]);
@@ -21,7 +21,7 @@ export default function Contents() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        Loading.standard("Fetching content...");
+        Loading.standard("Fetching Products...");
         const fetchedImages = await fetchImagesFromCloudinary();
         const fetchedPdfs = await fetchPdfsFromCloudinary();
         setImages(fetchedImages);
@@ -37,10 +37,6 @@ export default function Contents() {
 
     fetchData();
   }, []);
-
-  const totalImages = images.length;
-  const totalPages = Math.ceil(totalImages / ITEMS_PER_PAGE);
-  const paginatedImages = images.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -82,6 +78,11 @@ export default function Contents() {
     return "Untitled Item";
   };
 
+  const filteredImages = searchTerm ? images.filter((img) => getDisplayTitle(img).toLowerCase().includes(searchTerm.toLowerCase())) : images;
+  const totalImages = filteredImages.length;
+  const totalPages = Math.ceil(totalImages / ITEMS_PER_PAGE);
+  const paginatedImages = searchTerm ? filteredImages : filteredImages.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   const handleClickItem = (resource) => {
     const encodedPublicId = encodeURIComponent(resource.public_id);
     router.push(`/store/${encodedPublicId}`);
@@ -113,18 +114,19 @@ export default function Contents() {
           </div>
         ))}
       </div>
-
-      <div className="flex items-center justify-center gap-4">
-        <button onClick={handlePrev} disabled={currentPage === 1} className="cursor-pointer rounded border px-4 py-1 text-sm disabled:opacity-50">
-          Previous
-        </button>
-        <span className="text-xs font-medium">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button onClick={handleNext} disabled={currentPage === totalPages} className="cursor-pointer rounded border px-4 py-1 text-sm disabled:opacity-50">
-          Next
-        </button>
-      </div>
+      {!searchTerm && (
+        <div className="flex items-center justify-center gap-4">
+          <button onClick={handlePrev} disabled={currentPage === 1} className="cursor-pointer rounded border px-4 py-1 text-sm disabled:opacity-50">
+            Previous
+          </button>
+          <span className="text-xs font-medium">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button onClick={handleNext} disabled={currentPage === totalPages} className="cursor-pointer rounded border px-4 py-1 text-sm disabled:opacity-50">
+            Next
+          </button>
+        </div>
+      )}
 
       {pdfs.length > 0 && (
         <div className="mt-8">

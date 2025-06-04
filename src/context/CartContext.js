@@ -78,7 +78,7 @@ export function CartProvider({ children }) {
       return;
     }
 
-    const itemToRemove = cartItems.find((item) => item.public_id === publicId && item.options?.selectedHoopSize === options?.selectedHoopSize && item.options?.selectedThreadType === options?.selectedThreadType);
+    const itemToRemove = cartItems.some((item) => item.public_id === publicId);
 
     if (!itemToRemove) {
       console.warn("Attempted to remove item not found in cart state:", publicId, options);

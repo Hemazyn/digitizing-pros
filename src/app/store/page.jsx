@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { signOut } from "firebase/auth";
@@ -10,30 +10,21 @@ import Footer from "../components/Footer";
 import Aside from "./components/Aside";
 import Contents from "./components/Contents";
 import Link from "next/link";
+import { Loading } from "notiflix";
 
 export default function StorePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
+    if (!loading) {
+      Loading.dots();
     }
-  }, [user, loading]);
+  }, [loading]);
 
-  if (!user) {
-    return (
-      <div className="bg-svg flex min-h-screen w-full flex-col items-center justify-center space-y-1.5">
-        <h1 className="font-bricolage text-primary text-3xl">Welcome Buddy!</h1>
-        <Link href="/login" className="text-primary hover:text-btBlue flex items-center">
-          <p className="text-btBlue text-lg font-semibold">Please log in to access the store.</p>
-        </Link>
-      </div>
-    );
-  }
-
-  const displayInitial = user.displayName ? user.displayName.charAt(0).toUpperCase() : "?";
-  const firstName = user.displayName ? user.displayName.split(" ")[0] : "?";
+  const displayInitial = user?.displayName ? user.displayName.charAt(0).toUpperCase() : "?";
+  const firstName = user?.displayName ? user.displayName.split(" ")[0] : "Guest";
 
   return (
     <div className="flex min-h-screen flex-col bg-white text-gray-800">
@@ -48,7 +39,7 @@ export default function StorePage() {
         </div>
         <div className="relative mx-auto w-70 rounded-lg bg-white md:w-100 lg:w-150">
           <Search className="text-btext absolute top-1/2 left-3 h-4.5 -translate-y-1/2" />
-          <input type="text" placeholder="Search designs, patches, and more..." className="text-btext w-full rounded-lg py-1.5 pr-4 pl-10 outline-0 placeholder:text-xs md:placeholder:text-base" />
+          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search designs, patches, and more..." className="text-btext w-full rounded-lg py-1.5 pr-4 pl-10 outline-0 placeholder:text-xs md:placeholder:text-base" />
         </div>
         <div className="flex flex-wrap justify-center gap-3">
           <span className="text-primary flex items-center rounded-full bg-white px-3 py-2 text-sm font-medium">Pre-Digitized Designs</span>
@@ -58,7 +49,7 @@ export default function StorePage() {
       </div>
       <div className="w5/6 mx-auto mt-5 mb-5 flex w-full flex-col gap-8 px-4 md:mt-10 md:w-11/12 md:flex-row md:px-0">
         <Aside />
-        <Contents />
+        <Contents searchTerm={searchTerm} />
       </div>
       <Footer />
     </div>
