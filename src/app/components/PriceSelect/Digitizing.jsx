@@ -2,14 +2,14 @@ import Image from "next/image";
 
 export default function Digitizing() {
      const under5Inches = [
-          { quantity: "10+", type: "Basic Logos", price: "$5", savings: "Save $2 each" },
-          { quantity: "20+", type: "Basic Logos", price: "$4.5", savings: "Save $2.5 each" },
+          { quantity: "10+", type: "Simple Logos", price: "$5", savings: "Save $2 each" },
+          { quantity: "20+", type: "Simple Logos", price: "$4.5", savings: "Save $2.5 each" },
           { quantity: "10+", type: "Complex Designs", price: "$10", savings: "Save $2 each" },
           { quantity: "20+", type: "Complex Designs", price: "$9.5", savings: "Save $2.5 each" },
      ];
      const over5Inches = [
-          { quantity: "10+", type: "Basic Logos", price: "$13", savings: "Save $2 each" },
-          { quantity: "20+", type: "Basic Logos", price: "$12.5", savings: "Save $2.5 each" },
+          { quantity: "10+", type: "Simple Logos", price: "$13", savings: "Save $2 each" },
+          { quantity: "20+", type: "Simple Logos", price: "$12.5", savings: "Save $2.5 each" },
           { quantity: "10+", type: "Moderate Logos", price: "$18", savings: "Save $2 each" },
           { quantity: "20+", type: "Moderate Logos", price: "$17.5", savings: "Save $2.5 each" },
           { quantity: "10+", type: "Complex Logos", price: "$28", savings: "Save $2 each" },
