@@ -114,11 +114,6 @@ export default function CartContent() {
     }
   };
 
-  if (!email || !email.includes("@")) {
-    Notify.failure("Please enter a valid email.");
-    return;
-  }
-
   if (!isClient || authLoading || !user) {
     return (
       <>
