@@ -137,7 +137,7 @@ export default function Header({ className = "" }) {
         </div>
       </div>
       {isOpen && (
-        <div className="border-btGray flex h-50 flex-row items-start justify-between gap-6 rounded-b-lg border-t bg-gradient-to-b from-[#E0E7FF] to-white px-6 py-5 shadow-md md:hidden">
+        <div className="border-btGray flex h-70 flex-row items-start justify-between gap-6 rounded-b-lg border-t bg-gradient-to-b from-[#E0E7FF] to-white px-6 py-5 shadow-md md:hidden">
           <nav className="flex flex-col gap-4">
             {["Home", "How it Works", "Pricing"].map((item) => (
               <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, "")}`} className="hover:text-btBlue text-base font-medium text-gray-800 transition-colors">
@@ -146,6 +146,9 @@ export default function Header({ className = "" }) {
             ))}
             <a href="/contact" className="hover:text-btBlue text-base font-medium text-gray-800 transition-colors">
               Contact
+            </a>
+            <a href="/store" className="hover:text-btBlue text-base font-medium text-gray-800 transition-colors">
+              Store
             </a>
           </nav>
           {user ? (
