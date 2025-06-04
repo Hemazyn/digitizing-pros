@@ -23,26 +23,27 @@ export default function Testimonies() {
      );
 
      return (
-          <section className="py-12 bg-white" aria-label="Client testimonials"  >
-               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl font-bold text-gray-900">What Our Clients Say</h2>
-                    <p className="mt-2 text-gray-500 max-w-xl mx-auto">
-                         Don't just take our word for it - hear from our satisfied customers
-                    </p>
-                    <div className="mt-10 flex overflow-x-auto justify-start md:justify-center space-x-6 snap-x snap-mandatory px-2 sm:px-0">
-                         {testimonials.map((t, idx) => (
-                              <article key={idx} className="snap-start flex-shrink-0 items-start w-72 sm:w-80 bg-white border border-tLine rounded-3xl shadow-md p-6 flex flex-col" tabIndex={0} aria-label={`Testimonial from ${t.name}`}  >
-                                   <div className="flex space-x-1 mb-3" aria-hidden="true">
-                                        {Array.from({ length: t.stars }).map((_, i) => (
-                                             <Star key={i} />
-                                        ))}
-                                   </div>
-                                   <p className="flex-grow text-gray-700 text-base mb-4 text-start">“{t.text}”</p>
-                                   <p className="text-[#4538CB] font-semibold text-lg">{t.name}</p>
-                              </article>
-                         ))}
-                    </div>
-               </div>
-          </section>
+       <section className="bg-white py-12" aria-label="Client testimonials">
+         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+           <h2 className="text-3xl font-bold text-gray-900">What Our Clients Say</h2>
+           <p className="mx-auto mt-2 max-w-xl text-gray-500">Don't just take our word for it - hear from our satisfied customers</p>
+           <div className="mt-10 flex snap-x snap-mandatory justify-start space-x-6 overflow-x-auto px-2 sm:px-0 md:justify-center">
+             {testimonials.map((t, idx) => (
+               <article key={idx} className="border-tLine flex w-72 flex-shrink-0 snap-start flex-col items-start rounded-3xl border bg-white p-6 shadow-md sm:w-80" tabIndex={0} aria-label={`Testimonial from ${t.name}`}>
+                 <div className="mb-3 flex space-x-1" aria-hidden="true">
+                   {Array.from({ length: t.stars }).map((_, i) => (
+                     <Star key={i} />
+                   ))}
+                 </div>
+                 <p className="mb-4 flex-grow text-start text-base text-gray-700">“{t.text}”</p>
+                 {/* <p className="text-[#4538CB] font-semibold text-lg">{t.name}</p> */}
+                 <p className="text-lg font-semibold text-[#4538CB]">
+                   {t.name.split(" ")[0]} {t.name.split(" ")[1]?.[0]}.
+                 </p>
+               </article>
+             ))}
+           </div>
+         </div>
+       </section>
      );
 }

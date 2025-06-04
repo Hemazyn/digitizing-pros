@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Logo from "./Logo";
 import { Menu, X, ShoppingCart, ChevronDown, ChevronUp } from "lucide-react";
@@ -8,7 +9,6 @@ import { useCart } from "@/context/CartContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/firebase";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Notify } from "notiflix";
 
 export default function Header({ className = "" }) {
@@ -18,6 +18,7 @@ export default function Header({ className = "" }) {
   const { user } = useAuth();
   const { totalItemsInCart } = useCart();
   const router = useRouter();
+  const pathname = usePathname();
 
   const [isClient, setIsClient] = useState(false);
 
@@ -64,16 +65,16 @@ export default function Header({ className = "" }) {
       <div className="flex items-center justify-between px-4 py-3 lg:px-20">
         <Logo />
         <nav className="hidden items-center gap-8 md:flex">
-          <a href="/#main" className="cursor-pointer text-sm font-medium">
+          <a href="/#main" className="hover:text-btBlue cursor-pointer text-sm font-medium hover:font-semibold">
             Home
           </a>
-          <a href="/#how-it-works" className="cursor-pointer text-sm font-medium">
+          <a href="/#how-it-works" className="hover:text-btBlue cursor-pointer text-sm font-medium hover:font-semibold">
             How it Works
           </a>
-          <a href="/#pricing" className="cursor-pointer text-sm font-medium">
+          <a href="/#pricing" className="hover:text-btBlue cursor-pointer text-sm font-medium hover:font-semibold">
             Pricing
           </a>
-          <Link href="/contact" className="cursor-pointer text-sm font-medium">
+          <Link href="/contact" className={`hover:text-btBlue cursor-pointer text-sm font-medium hover:font-semibold ${pathname === "/contact" ? "text-btBlue" : "text-black"}`}>
             Contact
           </Link>
         </nav>
@@ -119,7 +120,7 @@ export default function Header({ className = "" }) {
               <Link href="/login" className="rounded-lg px-2.5 py-2 text-sm font-medium shadow">
                 Login
               </Link>
-              <Link href="/register" className="rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 px-2.5 py-2 text-sm font-medium text-white">
+              <Link href="/store" className="rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 px-2.5 py-2 text-sm font-medium text-white">
                 Shop Now
               </Link>
             </div>

@@ -6,7 +6,6 @@ import Footer from "@/app/components/Footer";
 import OrderConfirm from "../component/OrderConfirm";
 import Image from "next/image";
 import Link from "next/link";
-import Form from "next/form";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { defaultPrice } from "../../../constants/index";
@@ -90,7 +89,7 @@ export default function CartContent() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ cartItems }),
+        body: JSON.stringify({ cartItems, email }),
       });
 
       if (!response.ok) {
@@ -114,6 +113,11 @@ export default function CartContent() {
       Notify.failure("An unexpected error occurred.");
     }
   };
+
+  if (!email || !email.includes("@")) {
+    Notify.failure("Please enter a valid email.");
+    return;
+  }
 
   if (!isClient || authLoading || !user) {
     return (
@@ -219,7 +223,7 @@ export default function CartContent() {
                       <h3 className="text-primary text-xl font-semibold">Payment Details</h3>
                       <span className="text-btext text-sm font-medium">Complete your purchase by providing your payment details</span>
                     </div>
-                    <Form className="space-y-4">
+                    <form onClick={handlePayButtonClick} className="space-y-4">
                       <div className="flex flex-col space-y-1.5">
                         <label htmlFor="email" className="text-primary text-sm font-medium">
                           Email Address
@@ -245,10 +249,10 @@ export default function CartContent() {
                           <Image src="/stripe.svg" alt="Stripe" width={80} height={30} objectFit="contain" />
                         </div>
                       </div>
-                      <button type="button" onClick={handlePayButtonClick} className="w-full cursor-pointer rounded-lg bg-gradient-to-r from-[#372DA2] to-[#5749E9] py-3 text-sm font-medium text-white">
+                      <button type="submit" onClick={handlePayButtonClick} className="w-full cursor-pointer rounded-lg bg-gradient-to-r from-[#372DA2] to-[#5749E9] py-3 text-sm font-medium text-white">
                         Pay ${total.toFixed(2)}
                       </button>
-                    </Form>
+                    </form>
                   </div>
                 </div>
               </div>

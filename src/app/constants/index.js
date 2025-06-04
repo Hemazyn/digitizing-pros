@@ -19,7 +19,7 @@ export const steps = [
 export const features = [
   {
     icon: "/speed.svg",
-    title: "Supa Fast Turnaround",
+    title: "Super Fast Turnaround",
     description: "Fast order completion with no drop in quality. We guarantee timely delivery to meet your deadlines.",
   },
   {
