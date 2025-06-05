@@ -15,6 +15,8 @@ import { loadStripe } from "@stripe/stripe-js";
 export default function CartContent() {
   const { cartItems, updateCartItemQuantity, removeFromCart, totalItemsInCart, cartTotalPrice } = useCart();
   const { user, loading: authLoading } = useAuth();
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
   const router = useRouter();
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -218,23 +220,18 @@ export default function CartContent() {
                       <h3 className="text-primary text-xl font-semibold">Payment Details</h3>
                       <span className="text-btext text-sm font-medium">Complete your purchase by providing your payment details</span>
                     </div>
-                    <form onClick={handlePayButtonClick} className="space-y-4">
+                    <form className="space-y-4">
                       <div className="flex flex-col space-y-1.5">
                         <label htmlFor="email" className="text-primary text-sm font-medium">
                           Email Address
                         </label>
-                        <input type="email" id="email" placeholder="sidaibruma@gmail.com" className="border-btGray text-primary placeholder:text-btext w-full rounded-md border p-3 text-sm ring-0 outline-0" autoComplete="true" />
+                        <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="sidaibruma@gmail.com" className="border-btGray text-primary placeholder:text-btext w-full rounded-md border p-3 text-sm ring-0 outline-0" autoComplete="email" required />
                       </div>
                       <div className="flex flex-col space-y-1.5">
                         <label htmlFor="shippingAddress" className="text-primary text-sm font-medium">
                           Shipping Address
                         </label>
-                        <textarea
-                          id="shippingAddress"
-                          rows="3"
-                          autoComplete="true"
-                          placeholder="123 Queens Road, Suite 101&#10;Neville, CA 90210&#10;United States"
-                          className="border-btGray text-primary placeholder:text-btext w-full rounded-md border p-3 text-sm ring-0 outline-0"></textarea>
+                        <input type="text" id="shippingAddress" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main Street" className="border-btGray text-primary placeholder:text-btext w-full rounded-md border p-3 text-sm ring-0 outline-0" required />
                       </div>
                       <div className="flex flex-col space-y-1.5">
                         <label htmlFor="paymentMethod" className="text-primary text-sm font-medium">
@@ -244,7 +241,7 @@ export default function CartContent() {
                           <Image src="/stripe.svg" alt="Stripe" width={80} height={30} objectFit="contain" />
                         </div>
                       </div>
-                      <button type="submit" onClick={handlePayButtonClick} className="w-full cursor-pointer rounded-lg bg-gradient-to-r from-[#372DA2] to-[#5749E9] py-3 text-sm font-medium text-white">
+                      <button type="submit" onClick={handlePayButtonClick} disabled={!email || !address || cartItems.length === 0} className="w-full cursor-pointer rounded-lg bg-gradient-to-r from-[#372DA2] to-[#5749E9] py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60">
                         Pay ${total.toFixed(2)}
                       </button>
                     </form>
