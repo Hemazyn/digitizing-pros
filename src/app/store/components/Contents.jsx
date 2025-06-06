@@ -102,7 +102,6 @@ export default function Contents({ searchTerm }) {
         <p className="text-primary text-lg font-semibold">All Products</p>
         <span className="text-primary border-btGray rounded-full border px-1.5 py-[1px] text-xs font-medium">{totalImages} items</span>
       </div>
-
       <div className="grid grid-cols-3 gap-4">
         {paginatedImages.map((image, idx) => (
           <div key={idx} onClick={() => handleClickItem(image)} className="cursor-pointer space-y-3 rounded-[16px] p-2 shadow transition hover:shadow-md">
@@ -125,21 +124,6 @@ export default function Contents({ searchTerm }) {
           <button onClick={handleNext} disabled={currentPage === totalPages} className="cursor-pointer rounded border px-4 py-1 text-sm disabled:opacity-50">
             Next
           </button>
-        </div>
-      )}
-
-      {pdfs.length > 0 && (
-        <div className="mt-8">
-          <h2 className="mb-4 text-2xl font-semibold">PDF Documents</h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {pdfs.map((pdf, index) => (
-              <div key={index} className="flex flex-col items-center rounded-lg bg-white p-4 shadow-md">
-                <a href={pdf.secure_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                  {getDisplayTitle(pdf) || "Untitled PDF"}
-                </a>
-              </div>
-            ))}
-          </div>
         </div>
       )}
     </div>

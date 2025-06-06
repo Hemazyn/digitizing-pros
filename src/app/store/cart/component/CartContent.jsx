@@ -49,13 +49,10 @@ export default function CartContent() {
   const subtotal = cartItems.reduce((sum, item) => {
     const itemPrice = parseFloat(item.metadata?.price || defaultPrice);
     let optionPriceAdjustment = 0;
-    if (item.options?.selectedThreadType === "Silk (+$5.00)") {
-      optionPriceAdjustment = 5;
-    }
     return sum + (itemPrice + optionPriceAdjustment) * item.quantity;
   }, 0);
 
-  const tax = subtotal * taxRate;
+  const tax = cartItems.length * taxRate;
   const total = subtotal + shippingCost + tax;
 
   const getDisplayTitle = (resource) => {
@@ -141,8 +138,8 @@ export default function CartContent() {
         </div>
       ) : (
         <main className="min-h-screen flex-1">
-          <div className="container mx-auto mt-10 p-4 md:p-8">
-            <Link href="/store" className="text-primary hover:text-btBlue mb-4 flex cursor-pointer items-center">
+          <div className="container mx-auto mt-10 md:mt-16 p-4 md:p-8">
+            <Link href="/store" className="text-primary hover:text-btBlue mb-4 flex cursor-pointer items-center w-fit">
               <img src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
               Back to Store
             </Link>
@@ -153,39 +150,24 @@ export default function CartContent() {
                 <div className="bg-none">
                   <div className="space-y-4">
                     {cartItems.map((item) => (
-                      <div key={`${item.public_id}-${item.options?.selectedHoopSize}-${item.options?.selectedThreadType}`} className="flex items-start gap-5 rounded-[16px] p-2 shadow">
+                      <div key={`${item.public_id}`} className="flex gap-5 rounded-[16px] p-2 shadow">
                         <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg">
                           <Image src={item.secure_url || "/images/placeholder.jpg"} alt={getDisplayTitle(item)} layout="fill" objectFit="cover" className="rounded-lg" />
                         </div>
-                        <div className="flex w-full flex-col space-y-2.5">
-                          <div className="flex flex-row items-start justify-between">
-                            <div className="flex-grow space-y-2.5">
-                              <Link className="cursor-pointer" href={`/store/${item.public_id}`}>
-                                <h3 className="text-primary hover:text-btBlue font-bricolage text-2xl font-bold">{getDisplayTitle(item)}</h3>
-                              </Link>
-                              <p className="text-primary text-xl font-semibold">${(parseFloat(item.metadata?.price || defaultPrice) + (item.options?.selectedThreadType === "Silk (+$5.00)" ? 5 : 0)).toFixed(2)}</p>
-                              <div className="space-y-2">
-                                <p className="text-btext text-sm font-medium">Hoop Size: {item.options?.selectedHoopSize}</p>
-                                <p className="text-btext text-sm font-medium">Thread Type: {item.options?.selectedThreadType}</p>
-                              </div>
-                            </div>
-                            <button onClick={() => removeFromCart(item.public_id, item.options)} className="cursor-pointer">
+                        <div className="flex w-full flex-row space-x-2 justify-between">
+                          <div className="flex flex-col gap-1 md:gap-3">
+                            <Link className="cursor-pointer" href={`/store/${item.public_id}`}>
+                              <h3 className="text-primary hover:text-btBlue font-bricolage text-lg md:text-2xl font-bold">{getDisplayTitle(item)}</h3>
+                            </Link>
+                            <p className="text-btext text-sm">Create a stunning art with this complete embroidery design.</p>
+                          </div>
+                          <div className="flex flex-col justify-between items-end">
+                            <button onClick={() => removeFromCart(item.public_id, item.options)} className="cursor-pointer w-fit">
                               <Image src="/delete.svg" alt="Delete item" width={20} height={20} />
                             </button>
-                          </div>
-                          <div className="flex flex-row items-center justify-between">
-                            <div className="flex flex-col items-end">
-                              <div className="flex items-center space-x-2">
-                                <button onClick={() => updateCartItemQuantity(item.public_id, item.options, item.quantity - 1)} className="text-btext border-btGray h-8 w-8 cursor-pointer rounded-full border">
-                                  -
-                                </button>
-                                <span className="text-base font-medium text-black">{item.quantity}</span>
-                                <button onClick={() => updateCartItemQuantity(item.public_id, item.options, item.quantity + 1)} className="text-btext border-btGray h-8 w-8 cursor-pointer rounded-full border">
-                                  +
-                                </button>
-                              </div>
+                            <div className="flex flex-row justify-end">
+                              <p className="text-primary text-xl font-semibold">${((parseFloat(item.metadata?.price || defaultPrice) + (item.options?.selectedThreadType === "Silk (+$5.00)" ? 5 : 0)) * item.quantity).toFixed(2)}</p>
                             </div>
-                            <p className="text-primary text-xl font-semibold">${((parseFloat(item.metadata?.price || defaultPrice) + (item.options?.selectedThreadType === "Silk (+$5.00)" ? 5 : 0)) * item.quantity).toFixed(2)}</p>
                           </div>
                         </div>
                       </div>
@@ -241,7 +223,7 @@ export default function CartContent() {
                           <Image src="/stripe.svg" alt="Stripe" width={80} height={30} objectFit="contain" />
                         </div>
                       </div>
-                      <button type="submit" onClick={handlePayButtonClick} disabled={!email || !address || cartItems.length === 0} className="w-full cursor-pointer rounded-lg bg-gradient-to-r from-[#372DA2] to-[#5749E9] py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60">
+                      <button type="submit" onClick={handlePayButtonClick} disabled={!email || !address || cartItems.length === 0} className="w-full cursor-pointer rounded-lg btn-bg py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60">
                         Pay ${total.toFixed(2)}
                       </button>
                     </form>
@@ -251,8 +233,8 @@ export default function CartContent() {
             </div>
           </div>
           {showOrderConfirm && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60">
-              <OrderConfirm />
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <OrderConfirm cartItems={cartItems} />
             </div>
           )}
         </main>

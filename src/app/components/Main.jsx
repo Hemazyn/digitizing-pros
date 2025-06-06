@@ -15,7 +15,7 @@ export default function Main() {
               </h1>
               <p className="text-gray text-base font-medium md:text-lg lg:text-xl">Flat Rate, Fast Turnaround, 100% Satisfaction Guaranteed.</p>
             </div>
-            <button className="md:text-md cursor-pointer rounded-lg bg-gradient-to-r from-[#5749E9] to-[#372DA2] px-4 py-2 text-sm font-semibold text-white md:px-6">Upload Your Design</button>
+            <button className="md:text-md cursor-pointer rounded-lg btn-bg px-4 py-2 text-sm font-semibold text-white md:px-6">Upload Your Design</button>
           </div>
           {/* Feature Badges */}
           <div className="flex flex-wrap justify-center gap-3 md:gap-5">

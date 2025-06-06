@@ -25,8 +25,6 @@ export default function StoreItemPage() {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [mainDisplayImage, setMainDisplayImage] = useState("");
 
-  const [quantity, setQuantity] = useState(1);
-
   const { getItemPreferences, updateItemPreferences, preferencesLoading } = useUserPreferences();
   const isInitialPrefLoad = React.useRef(true);
 
@@ -67,7 +65,6 @@ export default function StoreItemPage() {
   useEffect(() => {
     if (publicId && !preferencesLoading && resource && isInitialPrefLoad.current) {
       const itemPrefs = getItemPreferences(publicId);
-      if (itemPrefs.qty) setQuantity(itemPrefs.qty);
       isInitialPrefLoad.current = false;
     }
   }, [publicId, preferencesLoading, getItemPreferences, resource]);
@@ -109,19 +106,6 @@ export default function StoreItemPage() {
     };
   }, [publicId]);
 
-  useEffect(() => {
-    const itemInCart = cartItems.find((item) => item.public_id === publicId);
-    if (itemInCart) {
-      setQuantity(itemInCart.quantity);
-    } else {
-      setQuantity(1);
-    }
-  }, [cartItems, publicId]);
-
-  const handleQuantityChange = (change) => {
-    setQuantity((prev) => Math.max(1, prev + change));
-  };
-
   const calculateDisplayPrice = () => {
     let price = parseFloat(resource.metadata?.price || defaultPrice);
 
@@ -141,14 +125,12 @@ export default function StoreItemPage() {
       return;
     }
 
-    const options = {};
-
     if (isItemInCart) {
-      removeFromCart(resource.public_id, options);
+      removeFromCart(resource.public_id);
       Notify.info(`${getDisplayTitle(resource)} removed from cart!`);
     } else {
-      addToCart(resource, quantity, options);
-      Notify.success(`${quantity} x ${getDisplayTitle(resource)} added to cart!`);
+      addToCart(resource);
+      Notify.success(`${getDisplayTitle(resource)} added to cart!`);
     }
   };
 
@@ -196,7 +178,7 @@ export default function StoreItemPage() {
               </div>
             </div>
             {/* Product Details & Options */}
-            <div className="space-y-5 md:col-span-4">
+            <div className="space-y-10 md:col-span-4">
               <div className="space-y-5">
                 <div className="space-y-1">
                   <div className="space-y-1">
@@ -205,17 +187,8 @@ export default function StoreItemPage() {
                   </div>
                   <p className="text-btext text-sm">Create a stunning {getDisplayTitle(resource)} with this complete embroidery kit. Perfect for beginners and experienced crafters alike, this kit includes everything you need to create a beautiful piece of handmade art.</p>
                 </div>
-                <div className="flex items-center space-x-4">
-                  <button onClick={() => handleQuantityChange(-1)} className="cursor-pointer rounded-md border border-gray-300 px-3 py-1 text-gray-700 hover:bg-gray-100">
-                    -
-                  </button>
-                  <span className="text-xl font-medium">{quantity}</span>
-                  <button onClick={() => handleQuantityChange(1)} className="cursor-pointer rounded-md border border-gray-300 px-3 py-1 text-gray-700 hover:bg-gray-100">
-                    +
-                  </button>
-                </div>
               </div>
-              <button disabled={!user} onClick={handleToggleCart} className={`w-full rounded-md py-3 text-lg font-semibold text-white transition ${isItemInCart ? "bg-red-600 hover:bg-red-700" : "bg-btBlue hover:bg-btBlue/90"} ${!user && "cursor-not-allowed opacity-50"}`}>
+              <button disabled={!user} onClick={handleToggleCart} className={`w-full rounded-md py-3 text-lg font-semibold text-white transition ${isItemInCart ? "bg-red-600 hover:bg-red-700" : "btn-bg cursor-pointer hover:bg-btBlue"} ${!user && "cursor-not-allowed opacity-50"}`}>
                 {isItemInCart ? "Remove from Cart" : user ? "Add to Cart" : "Login to Add"}
               </button>
             </div>

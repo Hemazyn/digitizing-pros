@@ -44,3 +44,7 @@ body {
 .tab-bg {
   background: linear-gradient(90deg, #f3f2ff 49%, #f0efff 46%);
 }
+
+.btn-bg {
+  background: linear-gradient(to right, #5749e9, #372da2);
+}
