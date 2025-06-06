@@ -92,7 +92,7 @@ export default function ContactPage() {
               {errors.message && <span className="text-xs text-red-500">Message is required</span>}
             </div>
 
-            <button type="submit" disabled={isSending} className="cursor-pointer rounded-md bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 px-6 py-2 font-semibold text-white">
+            <button type="submit" disabled={isSending} className="cursor-pointer rounded-md btn-bg px-6 py-2 font-semibold text-white">
               {isSending ? "Sending..." : "Send Message"}
             </button>
           </form>

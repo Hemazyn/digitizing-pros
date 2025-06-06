@@ -38,7 +38,7 @@ export default function Header({ className = "" }) {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      router.push("/login");
+      router.push("/");
     } catch (error) {
       Notify.failure("Error signing out:", error);
     }
@@ -58,7 +58,7 @@ export default function Header({ className = "" }) {
     };
   }, []);
 
-  const firstName = user?.displayName?.split(" ")[0] || "User";
+  const firstName = user?.displayName?.split(" ")[0] || "Guest";
 
   return (
     <header className={`fixed z-50 w-full transition-colors duration-300 ${scrolled ? "border-btGray border-b bg-white" : "bg-transparent"} ${className}`}>
@@ -120,7 +120,7 @@ export default function Header({ className = "" }) {
               <Link href="/login" className="rounded-lg px-2.5 py-2 text-sm font-medium shadow">
                 Login
               </Link>
-              <Link href="/store" className="rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 px-2.5 py-2 text-sm font-medium text-white">
+              <Link href="/store" className="rounded-lg btn-bg px-2.5 py-2 text-sm font-medium text-white">
                 Shop Now
               </Link>
             </div>
@@ -168,7 +168,7 @@ export default function Header({ className = "" }) {
                       </Link>
                       <Link href="/dashboard/orders" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
                         <Image src="/orders.svg" width={16} height={16} alt="orders" />
-                        <span className="text-sm">Orders</span>
+                        <span className="text-sm">Store</span>
                       </Link>
                       <Link href="/dashboard/inbox" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
                         <Image src="/inbox.svg" width={16} height={16} alt="inbox" />
@@ -188,7 +188,7 @@ export default function Header({ className = "" }) {
               <Link href="/login" className="rounded-lg px-2.5 py-2 text-sm font-medium shadow">
                 Login
               </Link>
-              <Link href="/register" className="rounded-lg bg-gradient-to-b from-[#5749E9]/90 to-[#372DA2]/90 px-2.5 py-2 text-sm font-medium text-white">
+              <Link href="/store" className="rounded-lg btn-bg px-2.5 py-2 text-sm font-medium text-white">
                 Shop Now
               </Link>
             </div>
