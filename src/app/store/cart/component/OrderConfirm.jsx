@@ -37,20 +37,22 @@ export default function OrderConfirm({ cartItems = [] }) {
             <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
         </div>
-        <h2 className="text-lg font-bold text-gray-800 mb-2">Order Confirmed</h2>
-        <p className="text-sm text-gray-500 mb-2">Download your PDFs below:</p>
+        <h2 className="text-lg font-bold text-gray-800">Order Confirmed</h2>
+        <p className="text-sm text-gray-500 mb-4">Download your PDFs below:</p>
         <div className="space-y-2 mb-4">
           {matchedFiles.map((file, idx) => (
-            <div key={idx} className="flex flex-row justify-between items-center border border-btGray p-3 rounded-xl">
+            <div key={idx} className="flex flex-row justify-between items-center border border-btGray text-primary hover:text-btBlue hover:border-btBlue p-3 rounded-xl">
               <a href={`https://res.cloudinary.com/dihhljibk/${file.public_id}.pdf`} target="_blank" download className="block w-full text-sm text-left transition">
-                {file.public_id.split("/").pop()}
+                <div className="flex flex-row justify-between items-center">
+                  <span className="font-semibold">{file.public_id.split("/").pop()}</span>
+                  <Download size={20} />
+                </div>
               </a>
-              <Download size={20} />
             </div>
           ))}
         </div>
         <Link href="/store">
-          <button className="w-full cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100">
+          <button className="w-full cursor-pointer rounded-md btn-bg px-4 py-2 text-sm font-semibold text-white transition">
             Continue Shopping
           </button>
         </Link>

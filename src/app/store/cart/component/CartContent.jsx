@@ -18,6 +18,7 @@ export default function CartContent() {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const router = useRouter();
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("stripe");
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
   const shippingCost = 0.0;
@@ -81,14 +82,14 @@ export default function CartContent() {
   const handlePayButtonClick = async (event) => {
     event.preventDefault();
     const stripe = await stripePromise;
-
     try {
+      Loading.dots("Please wait while we process your payment...");
       const response = await fetch("/api/payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ cartItems, email }),
+        body: JSON.stringify({ cartItems, email, selectedPaymentMethod }),
       });
 
       if (!response.ok) {
@@ -100,16 +101,16 @@ export default function CartContent() {
 
       const data = await response.json();
 
-      Loading.dots("Please wait while we process your payment...");
-
       if (data.id) {
         stripe.redirectToCheckout({ sessionId: data.id });
       } else {
         Notify.failure("Failed to create checkout session.");
+        Loading.remove();
       }
     } catch (error) {
       console.error("Payment error:", error);
       Notify.failure("An unexpected error occurred.");
+      Loading.remove();
     }
   };
 
@@ -138,8 +139,8 @@ export default function CartContent() {
         </div>
       ) : (
         <main className="min-h-screen flex-1">
-          <div className="container mx-auto mt-10 md:mt-16 p-4 md:p-8">
-            <Link href="/store" className="text-primary hover:text-btBlue mb-4 flex cursor-pointer items-center w-fit">
+          <div className="container mx-auto mt-10 p-4 md:mt-16 md:p-8">
+            <Link href="/store" className="text-primary hover:text-btBlue mb-4 flex w-fit cursor-pointer items-center">
               <img src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
               Back to Store
             </Link>
@@ -154,15 +155,15 @@ export default function CartContent() {
                         <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg">
                           <Image src={item.secure_url || "/images/placeholder.jpg"} alt={getDisplayTitle(item)} layout="fill" objectFit="cover" className="rounded-lg" />
                         </div>
-                        <div className="flex w-full flex-row space-x-2 justify-between">
+                        <div className="flex w-full flex-row justify-between space-x-2">
                           <div className="flex flex-col gap-1 md:gap-3">
                             <Link className="cursor-pointer" href={`/store/${item.public_id}`}>
-                              <h3 className="text-primary hover:text-btBlue font-bricolage text-lg md:text-2xl font-bold">{getDisplayTitle(item)}</h3>
+                              <h3 className="text-primary hover:text-btBlue font-bricolage text-lg font-bold md:text-2xl">{getDisplayTitle(item)}</h3>
                             </Link>
                             <p className="text-btext text-sm">Create a stunning art with this complete embroidery design.</p>
                           </div>
-                          <div className="flex flex-col justify-between items-end">
-                            <button onClick={() => removeFromCart(item.public_id, item.options)} className="cursor-pointer w-fit">
+                          <div className="flex flex-col items-end justify-between">
+                            <button onClick={() => removeFromCart(item.public_id, item.options)} className="w-fit cursor-pointer">
                               <Image src="/delete.svg" alt="Delete item" width={20} height={20} />
                             </button>
                             <div className="flex flex-row justify-end">
@@ -219,11 +220,19 @@ export default function CartContent() {
                         <label htmlFor="paymentMethod" className="text-primary text-sm font-medium">
                           Payment Method
                         </label>
-                        <div className="flex items-center rounded-md border border-gray-300 p-3">
-                          <Image src="/stripe.svg" alt="Stripe" width={80} height={30} objectFit="contain" />
+                        <div className="flex items-center space-x-4 w-full justify-between">
+                          <label className={`flex cursor-pointer items-center w-full justify-center h-12 rounded-lg p-2 transition-all duration-200 ease-in-out ${selectedPaymentMethod === "stripe" ? "border-btBlue border-2" : "border border-btGray"}`} onClick={() => setSelectedPaymentMethod("stripe")}>
+                            <Image src="/stripe.svg" alt="Stripe" width={80} height={30} objectFit="contain" />
+                          </label>
+                          <label className={`flex cursor-pointer items-center w-full justify-center h-12 rounded-lg p-2 transition-all duration-200 ease-in-out ${selectedPaymentMethod === "google_pay" ? "border-btBlue border-2" : "border border-btGray"}`} onClick={() => setSelectedPaymentMethod("google_pay")}>
+                            <Image src="/google-pay.svg" alt="Google Pay" width={60} height={30} objectFit="contain" />
+                          </label>
+                          <label className={`flex cursor-pointer items-center w-full justify-center h-12 rounded-lg p-2 transition-all duration-200 ease-in-out ${selectedPaymentMethod === "apple_pay" ? "border-btBlue border-2" : "border border-btGray"}`} onClick={() => setSelectedPaymentMethod("apple_pay")}>
+                            <Image src="/apple-pay.svg" alt="Apple Pay" width={60} height={30} objectFit="contain" />
+                          </label>
                         </div>
                       </div>
-                      <button type="submit" onClick={handlePayButtonClick} disabled={!email || !address || cartItems.length === 0} className="w-full cursor-pointer rounded-lg btn-bg py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60">
+                      <button type="submit" onClick={handlePayButtonClick} disabled={!email || !address || cartItems.length === 0} className="btn-bg w-full cursor-pointer rounded-lg py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60">
                         Pay ${total.toFixed(2)}
                       </button>
                     </form>
