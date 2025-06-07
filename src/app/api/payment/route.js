@@ -5,10 +5,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { cartItems } = body;
+    const { cartItems, selectedPaymentMethod } = body;
+
     const taxRate = 0.07;
     const basePrice = 2.99;
-
     const finalPriceWithTax = basePrice + taxRate;
     const unitAmount = Math.round(finalPriceWithTax * 100);
 
@@ -24,8 +24,19 @@ export async function POST(req) {
       quantity: item.quantity || 1,
     }));
 
+    let payment_method_types_to_use = [];
+    if (selectedPaymentMethod === "stripe") {
+      payment_method_types_to_use = ["card"];
+    } else if (selectedPaymentMethod === "google_pay") {
+      payment_method_types_to_use = ["card"];
+    } else if (selectedPaymentMethod === "apple_pay") {
+      payment_method_types_to_use = ["card"];
+    } else {
+      payment_method_types_to_use = ["card"];
+    }
+
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      payment_method_types: payment_method_types_to_use,
       line_items,
       mode: "payment",
       success_url: `${req.headers.get("origin")}/store/cart?success=true`,
