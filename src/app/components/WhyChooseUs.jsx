@@ -9,7 +9,6 @@ export default function WhyChooseUs() {
         {/* Section Heading */}
         <h2 className="mb-3 text-xl font-semibold text-black sm:mb-4 sm:text-2xl md:text-3xl">Why Choose The Digitizing Pros</h2>
         <p className="text-btext mb-8 max-w-3xl text-sm sm:mb-10 sm:text-base">The Digitizing Pros deliver premium embroidery digitizing with fast turnaround, competitive pricing, and dependable support to meet your brand’s highest standards.</p>
-
         {/* Features Grid */}
         <div className="grid grid-cols-1 gap-6 rounded-xl border border-gray-200 bg-white p-6 sm:grid-cols-2 sm:gap-8 sm:p-8 md:gap-10 md:p-10">
           {features.map((feature, idx) => (

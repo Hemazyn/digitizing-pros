@@ -87,7 +87,7 @@ export default function Header({ className = "" }) {
               </Link>
               <div className="relative" ref={dropdownRef}>
                 <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-1.5 p-1">
-                  {user.photoURL && <img src={user.photoURL} alt="Avatar" width={20} height={20} className="rounded-full" />}
+                  {user.photoURL && <Image src={user.photoURL} alt="Avatar" width={20} height={20} className="rounded-full" />}
                   <span className="cursor-pointer text-sm font-medium">{firstName}</span>
                   {dropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
@@ -155,7 +155,7 @@ export default function Header({ className = "" }) {
             <div className="border-btGray flex flex-row items-center gap-3 rounded-lg border px-2">
               <div className="relative" ref={dropdownRef}>
                 <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-1.5 p-1">
-                  {user.photoURL && <img src={user.photoURL} alt="User Avatar" width={20} height={20} className="rounded-full" />}
+                  {user.photoURL && <Image src={user.photoURL} alt="User Avatar" width={20} height={20} className="rounded-full" />}
                   <span className="text-sm font-medium">{firstName}</span>
                   {dropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>

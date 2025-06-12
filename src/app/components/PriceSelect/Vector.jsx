@@ -18,19 +18,19 @@ export default function Vector() {
             title: "Simple Design",
             subtitle: "Per design only",
             price: "$7",
-            features: ["Simple Shapes", "Few Colors", "Simple Text"],
+            features: ["Simple Shapes", "Few Colors", "Simple Text"]
           },
           {
             title: "Moderate Design",
             subtitle: "Per design only",
             price: "$15",
-            features: ["Moderate complexity", "Multiple colors", "Detailed elements"],
+            features: ["Moderate complexity", "Multiple colors", "Detailed elements"]
           },
           {
             title: "Complex Design",
             subtitle: "Per design (10+ designs)",
             price: "$20",
-            features: ["Highly detailed", "Many colors", "Complex illustrations"],
+            features: ["Highly detailed", "Many colors", "Complex illustrations"]
           },
         ].map(({ title, subtitle, price, features }, i) => (
           <div key={i} className="flex flex-col rounded-xl bg-white shadow-sm">
@@ -52,7 +52,6 @@ export default function Vector() {
       </div>
       <section>
         <h2 className="mb-6 text-center text-2xl font-bold text-gray-900 md:text-3xl">Bulk Order Discounts – Vector Services</h2>
-
         <div className="overflow-x-auto">
           <table className="min-w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <thead className="bg-theadBg text-gray-600">

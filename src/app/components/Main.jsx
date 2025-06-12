@@ -3,7 +3,7 @@ import Carousel from "../components/Carousel";
 
 export default function Main() {
   return (
-    <div id="main" className="bg-svg flex min-h-screen w-full items-center justify-center px-4 py-12 text-center md:px-12">
+    <div id="main" className="bg-svg flex w-full items-center justify-center px-4 py-12 text-center md:px-12">
       <div className="flex w-full max-w-6xl flex-col">
         <div className="mt-10 flex flex-col gap-9 md:mt-20">
           {/* Headline and CTA */}

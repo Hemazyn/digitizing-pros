@@ -145,7 +145,7 @@ export default function StoreItemPage() {
           <h2 className="text-2xl font-semibold">Error Loading Product</h2>
           <p className="text-lg">{error}</p>
           <Link href="/store" className="mt-4 cursor-pointer text-sm text-gray-600 transition hover:text-violet-700">
-            <img src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
+            <Image src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
             Back to Store
           </Link>
         </main>
@@ -164,7 +164,7 @@ export default function StoreItemPage() {
       <main className="min-h-screen flex-1 pt-16">
         <div className="container mx-auto p-4 md:p-8">
           <Link href="/store" className="text-primary hover:text-btBlue mb-6 flex cursor-pointer items-center">
-            <img src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
+            <Image src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
             Back to Store
           </Link>
           <div className="grid grid-cols-1 gap-8 bg-white md:grid-cols-10">
@@ -173,7 +173,7 @@ export default function StoreItemPage() {
               <Image src={mainDisplayImage || mainImagePlaceholder} alt={mainDisplayImage ? getDisplayTitle(resource) : "Loading image"} width={600} height={400} priority className="mb-4 h-auto w-full rounded-lg object-cover shadow-md" />
               <div className="flex space-x-2 overflow-x-auto pb-2">
                 {[...Array(4)].map((_, index) => (
-                  <img key={index} src={resource?.secure_url || thumbnailPlaceholder} alt={resource?.secure_url ? `${getDisplayTitle(resource)} thumbnail ${index + 1}` : "Loading thumbnail"} className={`h-20 w-20 cursor-pointer rounded-md border-2 object-cover transition ${mainDisplayImage === resource?.secure_url ? "border-none" : "border-transparent"}`} />
+                  <Image key={index} src={resource?.secure_url || thumbnailPlaceholder} alt={resource?.secure_url ? `${getDisplayTitle(resource)} thumbnail ${index + 1}` : "Loading thumbnail"} className={`h-20 w-20 cursor-pointer rounded-md border-2 object-cover transition ${mainDisplayImage === resource?.secure_url ? "border-none" : "border-transparent"}`} />
                 ))}
               </div>
             </div>

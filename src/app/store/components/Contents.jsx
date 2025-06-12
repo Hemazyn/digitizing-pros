@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { fetchImagesFromCloudinary } from "../../constants/imageContent";
-import { fetchPdfsFromCloudinary } from "../../constants/pdfContent";
-import { Report, Loading } from "notiflix";
+// import { fetchPdfsFromCloudinary } from "../../constants/pdfContent";
+import { Notify, Loading } from "notiflix";
 import Image from "next/image";
 import { defaultPrice } from "../../constants";
 
@@ -13,7 +13,7 @@ export default function Contents({ searchTerm }) {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [images, setImages] = useState([]);
-  const [pdfs, setPdfs] = useState([]);
+  // const [pdfs, setPdfs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -23,12 +23,12 @@ export default function Contents({ searchTerm }) {
         setLoading(true);
         Loading.standard("Fetching Products...");
         const fetchedImages = await fetchImagesFromCloudinary();
-        const fetchedPdfs = await fetchPdfsFromCloudinary();
+        // const fetchedPdfs = await fetchPdfsFromCloudinary();
         setImages(fetchedImages);
-        setPdfs(fetchedPdfs);
+        // setPdfs(fetchedPdfs);
       } catch (err) {
         setError(err.message);
-        Report.failure("Error", `Failed to fetch content: ${err.message}`, "Okay");
+        Notify.failure("Error", `Failed to fetch content: ${err.message}`, "Okay");
       } finally {
         setLoading(false);
         Loading.remove();

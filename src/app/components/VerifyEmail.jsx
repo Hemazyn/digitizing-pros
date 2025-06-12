@@ -1,7 +1,7 @@
 'use client';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 export default function VerifyEmailPage() {
@@ -46,8 +46,7 @@ export default function VerifyEmailPage() {
 
                     <p className="text-sm text-gray-500 mb-4">
                          Didn't receive the email? Check your spam folder or {' '}
-                         <button className="text-btBlue font-semibold hover:underline cursor-pointer"
-                              onClick={() => window.location.reload()}>
+                         <button className="text-btBlue font-semibold hover:underline cursor-pointer" onClick={() => window.location.reload()}>
                               try again
                          </button>
                     </p>

@@ -35,9 +35,7 @@ export default function Testimonies() {
           {testimonials.map((t, idx) => (
             <article key={idx} className="border-tLine flex w-72 flex-shrink-0 snap-start flex-col items-start rounded-3xl border bg-white p-4 shadow-md md:p-6" tabIndex={0} aria-label={`Testimonial from ${t.name}`}>
               <div className="mb-3 flex space-x-1" aria-hidden="true">
-                {Array.from({ length: t.stars }).map((_, i) => (
-                  <Star key={i} />
-                ))}
+                {Array.from({ length: t.stars }).map((_, i) => (<Star key={i} />))}
               </div>
               <p className="text-btext mb-4 flex-grow text-start text-sm md:text-base">“{t.text}”</p>
               <p className="text-base font-semibold text-[#4538CB] md:text-lg">
