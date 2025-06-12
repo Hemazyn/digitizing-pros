@@ -24,18 +24,15 @@ export default function ForgotPassword({ setEmail }) {
                Notify.failure('Please enter your email.');
                return;
           }
-
           try {
                Loading.standard('Sending reset email...');
                await sendPasswordResetEmail(auth, form.email);
                await new Promise((resolve) => setTimeout(resolve, 2000));
                Loading.remove();
                Notify.success('Password reset email sent successfully!');
-
                if (setEmail && typeof setEmail === 'function') {
                     setEmail(form.email);
                }
-
                setShowVerify(true);
           } catch (error) {
                Loading.remove();

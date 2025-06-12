@@ -24,15 +24,9 @@ export default function PricingSection() {
                               </div>
                          ))}
                     </div>
-                    {activeTab === "Embroidery Digitizing" && (
-                         <Digitizing />
-                    )}
-                    {activeTab === "Vector Services" && (
-                         <Vector />
-                    )}
-                    {activeTab === "Embroidery Patches" && (
-                         <Patches />
-                    )}
+                    {activeTab === "Embroidery Digitizing" && (<Digitizing />)}
+                    {activeTab === "Vector Services" && (<Vector />)}
+                    {activeTab === "Embroidery Patches" && (<Patches />)}
                </div>
           </section>
      );

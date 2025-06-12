@@ -18,6 +18,13 @@
   --color-theadBg: #f8f8f8;
   --color-success: #2ecc71;
   --color-headBg: #eeedff;
+  /* dashboard */
+  --color-tabBg1: #ececec;
+  --color-pointBg: #ecebfa;
+  --color-cardBg3: #fbfbfb;
+  --color-pointStroke: #dad7f5;
+  --color-tabBg2: #eeeeee;
+  --text-xxs: 10px;
 }
 
 html {
@@ -47,4 +54,20 @@ body {
 
 .btn-bg {
   background: linear-gradient(to right, #5749e9, #372da2);
+}
+
+/* slider range */
+.bar-progress {
+  appearance: none;
+  border-radius: 7px;
+  width: 560px;
+  margin-left: 20px;
+  margin-right: 20px;
+  height: 6px;
+  border: none;
+  outline: none;
+}
+
+.bar-progress::-webkit-slider-thumb {
+  display: none;
 }

@@ -133,7 +133,7 @@ export default function CartContent() {
         <div className="bg-svg flex h-screen w-full flex-col items-center justify-center text-center">
           <p className="font-bricolage text-primary text-3xl font-semibold">Your cart is empty.</p>
           <Link href="/store" className="text-primary hover:text-btBlue mt-4 flex items-center">
-            <img src="/arrow-left.svg" alt="Continue Shopping" width={16} height={16} className="mr-2 inline-block" />
+            <Image src="/arrow-left.svg" alt="Continue Shopping" width={16} height={16} className="mr-2 inline-block" />
             Continue Shopping
           </Link>
         </div>
@@ -141,7 +141,7 @@ export default function CartContent() {
         <main className="min-h-screen flex-1">
           <div className="container mx-auto mt-10 p-4 md:mt-16 md:p-8">
             <Link href="/store" className="text-primary hover:text-btBlue mb-4 flex w-fit cursor-pointer items-center">
-              <img src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
+              <Image src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
               Back to Store
             </Link>
             <div className="flex flex-col gap-8 md:flex-row">
