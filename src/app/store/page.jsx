@@ -27,13 +27,12 @@ export default function StorePage() {
   const firstName = user?.displayName ? user.displayName.split(" ")[0] : "Guest";
 
   return (
-    <div className="flex min-h-screen flex-col bg-white text-gray-800">
+    <div className="relative flex flex-col text-gray-800">
       <Header />
       <div className="flex h-120 w-full flex-col justify-center gap-8 bg-linear-to-b from-white via-[#FFF0E2] to-[#EFEEFF] px-3 text-center">
         <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-semibold md:text-3xl lg:text-[48px]">Embroidery Design Shop</h1>
           <p className="text-gray-600">
-            {" "}
             Browse our collection of pre-digitized designs, patches, <br /> and embroidery tools{" "}
           </p>
         </div>

@@ -1,37 +1,22 @@
-import DashboardUI from "./DashboardUI";
-import Inbox from "./Inbox";
-import Orders from "./Orders";
-import Settings from "./Settings";
+import HomePage from "../homepage/page";
+import Inbox from "../inbox/page";
+import Orders from "../orders/page";
+import Reward from "../points/page";
+import Settings from "../settings/pages";
 
 export default function TabPanel({ activeTab, setActiveTab }) {
   switch (activeTab) {
     case "dashboard":
-      return <DashboardUI setActiveTab={setActiveTab} />;
+      return <HomePage setActiveTab={setActiveTab} />;
     case "orders":
       return <Orders setActiveTab={setActiveTab} />;
     case "inbox":
       return <Inbox setActiveTab={setActiveTab} />;
     case "setting":
       return <Settings setActiveTab={setActiveTab} />;
+    case "points":
+      return <Reward setActiveTab={setActiveTab} />;
     default:
       return null;
   }
 }
-
-// import DashboardUI from "./DashboardUI";
-// import Inbox from "./Inbox";
-// import Orders from "./Orders";
-// import Settings from "./Settings";
-
-// export default function TabPanel({ activeTab }) {
-//   switch (activeTab) {
-//     case "dashboard":
-//       return <DashboardUI />;
-//     case "orders":
-//       return <Orders />;
-//     case "inbox":
-//       return <Inbox />;
-//     case "setting":
-//       return <Settings />;
-//   }
-// }

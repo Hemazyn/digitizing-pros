@@ -17,10 +17,10 @@ export default function Sidebar({ activeTab, setActiveTab, isMobileDrawer = fals
 
   const goToPoints = () => {
     Notiflix.Loading.circle();
-    router.push("/dashboard/points");
     setTimeout(() => {
+      setActiveTab("points");
       Notiflix.Loading.remove();
-    }, 1000);
+    }, 300);
   };
 
   const tabs = [
@@ -42,13 +42,11 @@ export default function Sidebar({ activeTab, setActiveTab, isMobileDrawer = fals
             <span className="text-primary font-bricolage text-xs font-semibold">Digitizing Pros</span>
           </div>
         )}
-
         {!isMobileDrawer && (
           <div className="cursor-pointer" onClick={() => setCollapsed(!collapsed)}>
             {collapsed ? <PanelRightClose size={20} className="text-primary hover:text-btBlue mt-5" /> : <PanelRightOpen size={20} className="text-primary hover:text-btBlue mt-0" />}
           </div>
         )}
-
         {isMobileDrawer && (
           <div className="pb4 flex w-full items-center justify-between">
             <div className="flex items-center gap-2">
@@ -58,7 +56,6 @@ export default function Sidebar({ activeTab, setActiveTab, isMobileDrawer = fals
           </div>
         )}
       </div>
-
       <div className="flex h-full flex-col">
         {isMobileDrawer && (
           <div className="mb-4 flex w-full items-center justify-between">
@@ -73,7 +70,6 @@ export default function Sidebar({ activeTab, setActiveTab, isMobileDrawer = fals
             </button>
           </div>
         )}
-
         <nav className="mt-4 flex flex-col gap-4">
           {tabs.map((tab) => {
             const IconComponent = tab.icon;
@@ -90,14 +86,14 @@ export default function Sidebar({ activeTab, setActiveTab, isMobileDrawer = fals
         <div className="bg-btGray my-4 h-px w-full" />
         {(!collapsed || isMobileDrawer) && (
           <div onClick={goToPoints} className="no-underline">
-            <div className="points border-btGray flex cursor-pointer flex-col gap-2.5 rounded-lg border bg-white p-2 transition-all duration-200 hover:shadow-md">
+            <div className={`points flex cursor-pointer flex-col gap-2.5 rounded-lg border p-2 transition-all duration-200 hover:shadow-md ${activeTab === "points" ? "border-btGray bg-pointBg" : "border-btGray bg-white"}`}>
               <div className="flex justify-between gap-2">
                 <div className="flex flex-col gap-0.5">
                   <p className="text-primary text-sm font-medium">Loyalty Points</p>
                   <span className="text-primary text-[28px] font-bold">250</span>
                   <span className="text-btext text-xs font-medium">50 points until your next reward</span>
                 </div>
-                <div className="bg-btBlue flex h-5 w-5 items-center justify-center rounded-full p-1 text-white">
+                <div className={`flex h-5 w-5 items-center justify-center rounded-full p-1 ${activeTab === "points" ? "bg-btBlue text-white" : "bg-btGray text-btBlue"}`}>
                   <ChevronRight size={16} />
                 </div>
               </div>

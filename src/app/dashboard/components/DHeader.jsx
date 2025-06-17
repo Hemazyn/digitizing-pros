@@ -9,7 +9,7 @@ import { auth } from "@/firebase/firebase";
 import { signOut } from "firebase/auth";
 import { Notify } from "notiflix";
 
-export default function Header({ iconSrc = "/home.svg", title = "Dashboard", onMenuToggle }) {
+export default function Header({ activeTab = "dashboard", onMenuToggle }) {
   const { user } = useAuth();
   const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -38,6 +38,15 @@ export default function Header({ iconSrc = "/home.svg", title = "Dashboard", onM
     }
   };
 
+  const tabDetails = {
+    dashboard: { title: "Dashboard", iconSrc: "/home.svg" },
+    orders: { title: "My Orders", iconSrc: "/orders.svg" },
+    inbox: { title: "Inbox", iconSrc: "/inbox.svg" },
+    setting: { title: "Settings", iconSrc: "/setting.svg" },
+    points: { title: "Loyalty Points", iconSrc: "/award.svg" },
+  };
+  const { title, iconSrc } = tabDetails[activeTab] || { title: "Dashboard", iconSrc: "/home.svg" };
+
   const firstName = user?.displayName?.split(" ")[0] || "Buddy!";
   const photoURL = user?.photoURL || "/photoURL.svg";
 
@@ -48,7 +57,7 @@ export default function Header({ iconSrc = "/home.svg", title = "Dashboard", onM
           <Image src="/menu.svg" alt="Menu" width={24} height={24} />
         </button>
         <div className="hidden items-center gap-1.5 md:flex">
-          <Image src={iconSrc} width={16} height={16} alt="dashboard" />
+          <Image src={iconSrc} width={16} height={16} alt={title} />
           <span className="text-primary text-sm font-medium">{title}</span>
         </div>
       </div>

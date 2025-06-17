@@ -9,7 +9,12 @@ import CTA from "../components/CTA";
 
 export default function ContactPage() {
   const [isSending, setIsSending] = useState(false);
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = async (data) => {
     setIsSending(true);
@@ -23,12 +28,7 @@ export default function ContactPage() {
     };
 
     try {
-      const response = await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
-        templateParams,
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
-      );
+      const response = await emailjs.send(process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID, process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID, templateParams, process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY);
 
       Notiflix.Loading.remove();
       Notiflix.Notify.success("Message sent successfully!");
@@ -42,9 +42,8 @@ export default function ContactPage() {
     }
   };
 
-
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="relative flex flex-col bg-white">
       <Header />
       <div className="bg-headBg flex h-80 w-full flex-col justify-center px-3 text-center md:px-0">
         <h1 className="text-2xl font-semibold md:text-3xl lg:text-[48px]">Contact Us</h1>
@@ -92,7 +91,7 @@ export default function ContactPage() {
               {errors.message && <span className="text-xs text-red-500">Message is required</span>}
             </div>
 
-            <button type="submit" disabled={isSending} className="cursor-pointer rounded-md btn-bg px-6 py-2 font-semibold text-white">
+            <button type="submit" disabled={isSending} className="btn-bg cursor-pointer rounded-md px-6 py-2 font-semibold text-white">
               {isSending ? "Sending..." : "Send Message"}
             </button>
           </form>
