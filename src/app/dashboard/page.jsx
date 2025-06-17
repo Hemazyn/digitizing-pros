@@ -1,16 +1,48 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "./layouts/Sidebar";
 import TabPanel from "./layouts/TabPanel";
-import BottomNavigationBar from "./components/BottomNavigationBar";
+import BottomNavigationBar from "./layouts/BottomNavigationBar";
 import Header from "./components/DHeader";
-import DashboardUI from "./layouts/DashboardUI";
 import { useAuth } from "@/context/AuthContext";
+import { Loading, Notify } from "notiflix";
 
 export default function DashboardPage() {
-  const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("inbox");
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (loading) {
+      Loading.circle("Loading dashboard...");
+      return;
+    }
+    Loading.remove();
+    if (!user) {
+      Notify.failure("You must be logged in to access the dashboard.");
+      window.location.href = "/login";
+    }
+  }, [loading, user]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const value = params.get("tab");
+
+    if (value) {
+      setActiveTab(value);
+      const newParams = new URLSearchParams(params);
+      newParams.delete("tab");
+      const newUrl = `${window.location.pathname}${newParams.toString() ? "?" + newParams.toString() : ""}`;
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, []);
+
+  if (loading || !user) {
+    return null;
+  }
 
   const toggleMobileSidebar = () => {
     setMobileSidebarOpen(!mobileSidebarOpen);
@@ -39,7 +71,7 @@ export default function DashboardPage() {
         />
       </div>
       <main className="relative flex flex-1 flex-col overflow-y-scroll bg-white md:m-1.5 md:rounded-lg">
-        <Header iconSrc="/home.svg" title={activeTab.charAt(0).toUpperCase() + activeTab.slice(1).replace("-", " ")} onMenuToggle={toggleMobileSidebar} />
+        <Header activeTab={activeTab} onMenuToggle={toggleMobileSidebar} />
         <div className="relative flex-1 overflow-y-auto">
           <TabPanel activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>

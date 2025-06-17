@@ -6,7 +6,7 @@ import Files from "../components/Files";
 
 const tabs = ["Recent Orders", "My Files"];
 
-export default function DashboardUI() {
+export default function HomePage() {
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 

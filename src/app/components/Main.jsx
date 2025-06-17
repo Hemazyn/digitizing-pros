@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Carousel from "../components/Carousel";
+import Link from "next/link";
 
 export default function Main() {
   return (
@@ -15,9 +16,10 @@ export default function Main() {
               </h1>
               <p className="text-gray text-base font-medium md:text-lg lg:text-xl">Flat Rate, Fast Turnaround, 100% Satisfaction Guaranteed.</p>
             </div>
-            <button className="md:text-md cursor-pointer rounded-lg btn-bg px-4 py-2 text-sm font-semibold text-white md:px-6">Upload Your Design</button>
+            <Link href="/dashboard?tab=orders">
+              <button className="md:text-md btn-bg cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold text-white md:px-6">Upload Your Design</button>
+            </Link>
           </div>
-          {/* Feature Badges */}
           <div className="flex flex-wrap justify-center gap-3 md:gap-5">
             <div className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5">
               <Image src="/time.svg" alt="24hr" width={20} height={20} />

@@ -1,12 +1,12 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import Header from "../components/DHeader";
+import Header from "../../components/DHeader";
 import { ChevronDown, ChevronUp, Download, ChevronRight, Plus, Search, Calendar, Check } from "lucide-react";
-import NewOrder from "../components/NewOrder";
-import OrderDetailsModal from "../components/OrderDetailsModal";
+import NewOrder from "../../components/NewOrder";
+import OrderDetailsModal from "../../components/OrderDetailsModal";
 import { dummyOrders } from "@/lib/dummyData";
 import Notiflix from "notiflix";
 
@@ -38,8 +38,7 @@ const getPillStyling = (status) => {
   return { parentBgColor, parentTextColor, parentBorderColor, pricePillBgColor, pricePillTextColor };
 };
 
-export default function Orders({ setActiveTab }) {
-  const searchParams = useSearchParams();
+export default function Orders({ setActiveTab, successFlag, cancelFlag }) {
   const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();
@@ -52,19 +51,16 @@ export default function Orders({ setActiveTab }) {
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   useEffect(() => {
-    const success = searchParams.get("success");
-    const canceled = searchParams.get("canceled");
-
-    if (success === "true") {
+    if (successFlag) {
       Notiflix.Notify.success("Order successful! 🎉");
       setShowNewOrder(true);
       setShowOrderConfirm(true);
     }
-    if (canceled === "true") {
+
+    if (cancelFlag) {
       Notiflix.Notify.failure("Order not successful");
-      router.replace("/dashboard", { scroll: false });
     }
-  }, [searchParams]);
+  }, [successFlag, cancelFlag]);
 
   useEffect(() => {
     function handleClickOutside(event) {

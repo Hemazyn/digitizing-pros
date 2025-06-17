@@ -127,7 +127,7 @@ export default function NewOrder({ onClose, onLogout, setActiveTab }) {
             setShowDOrderConfirm(false);
             onClose?.();
             setActiveTab?.("orders");
-            router.push("/dashboard");
+            router.push("/dashboard?tab=orders");
           }}
         />
       </div>
