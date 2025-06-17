@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Logo from "./Logo";
-import { Menu, X, ShoppingCart, ChevronDown, ChevronUp } from "lucide-react";
+import { Menu, X, ShoppingCart, ChevronDown, ChevronUp, House, Package, Mail, LogOut } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { signOut } from "firebase/auth";
@@ -61,7 +61,7 @@ export default function Header({ className = "" }) {
   const firstName = user?.displayName?.split(" ")[0] || "Guest";
 
   return (
-    <header className={`fixed z-50 w-full transition-colors duration-300 ${scrolled ? "border-btGray border-b bg-white" : "bg-transparent"} ${className}`}>
+    <header className={`fixed z-50 w-full transition-colors duration-300 ${scrolled ? "border-btGray border-b bg-white/50 backdrop-blur-sm" : "bg-transparent"} ${className}`}>
       <div className="flex items-center justify-between px-4 py-3 lg:px-20">
         <Logo />
         <nav className="hidden items-center gap-8 md:flex">
@@ -81,36 +81,35 @@ export default function Header({ className = "" }) {
         <div className="hidden items-center gap-4 md:flex">
           {user ? (
             <div className="flex flex-row items-center gap-5">
-              <Link href="/store/cart" className="relative" aria-label="Cart">
-                <ShoppingCart size={20} className="cursor-pointer" />
+              <Link href="/store/cart" className="text-primary hover:text-btBlue relative" aria-label="Cart">
+                <ShoppingCart size={20} />
                 {isClient && totalItemsInCart > 0 && <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{totalItemsInCart}</span>}
               </Link>
               <div className="relative" ref={dropdownRef}>
                 <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-1.5 p-1">
                   {user.photoURL && <Image src={user.photoURL} alt="Avatar" width={20} height={20} className="rounded-full" />}
                   <span className="cursor-pointer text-sm font-medium">{firstName}</span>
-                  {dropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  {dropdownOpen ? <ChevronUp size={16} className="text-primary hover:text-btBlue cursor-pointer" /> : <ChevronDown size={16} className="text-primary hover:text-btBlue cursor-pointer" />}
                 </button>
                 {dropdownOpen && (
-                  <div className="absolute right-0 z-50 mt-2 w-30 rounded-xl bg-white">
-                    <div className="divide-btGray flex flex-col divide-y">
-                      <Link href="/dashboard" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 rounded-t-xl px-3 py-2">
-                        <Image src="/home.svg" width={16} height={16} alt="dashboard" />
-                        <span className="text-sm">Dashboard</span>
-                      </Link>
-                      <Link href="/store" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
-                        <Image src="/orders.svg" width={16} height={16} alt="orders" />
-                        <span className="text-sm">Store</span>
-                      </Link>
-                      <Link href="dashboard/inbox" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
-                        <Image src="/inbox.svg" width={16} height={16} alt="inbox" />
-                        <span className="text-sm">Inbox</span>
-                      </Link>
-                      <button onClick={handleLogout} className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 rounded-b-xl px-3 py-2">
-                        <Image src="/logout.svg" width={16} height={16} alt="logout" />
-                        <span className="text-sm">Logout</span>
-                      </button>
-                    </div>
+                  <div className="border-btGray absolute right-0 z-50 mt-2 flex w-30 flex-col rounded-xl border bg-white p-0.5">
+                    <Link href="/dashboard" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 rounded-t-xl px-2 py-2">
+                      <House size={16} />
+                      <span className="text-xs">Dashboard</span>
+                    </Link>
+                    <Link href="/store" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 px-2 py-2">
+                      <Package size={16} />
+                      <span className="text-sm">Store</span>
+                    </Link>
+                    <Link href="dashboard/inbox" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 px-2 py-2">
+                      <Mail size={16} />
+                      <span className="text-sm">Inbox</span>
+                    </Link>
+                    <div className="bg-btGray h-px w-full"></div> {/*  divider */}
+                    <button onClick={handleLogout} className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 rounded-b-xl px-2 py-2">
+                      <LogOut size={16} />
+                      <span className="text-sm">Logout</span>
+                    </button>
                   </div>
                 )}
               </div>
@@ -120,19 +119,19 @@ export default function Header({ className = "" }) {
               <Link href="/login" className="rounded-lg px-2.5 py-2 text-sm font-medium shadow">
                 Login
               </Link>
-              <Link href="/store" className="rounded-lg btn-bg px-2.5 py-2 text-sm font-medium text-white">
+              <Link href="/store" className="btn-bg rounded-lg px-2.5 py-2 text-sm font-medium text-white">
                 Shop Now
               </Link>
             </div>
           )}
         </div>
         <div className="flex flex-row items-center gap-4 md:hidden">
-          <Link href="/store/cart" className="relative" aria-label="Cart">
-            <ShoppingCart size={20} className="cursor-pointer" />
+          <Link href="/store/cart" className="text-primary hover:text-btBlue relative" aria-label="Cart">
+            <ShoppingCart size={20} />
             {isClient && totalItemsInCart > 0 && <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{totalItemsInCart}</span>}
           </Link>
-          <button className="cursor-pointer md:hidden" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          <button className="text-primary hover:text-btBlue cursor-pointer md:hidden" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X size={24} className="text-primary hover:text-btBlue" /> : <Menu size={24} className="text-primary hover:text-btBlue" />}
           </button>
         </div>
       </div>
@@ -157,28 +156,27 @@ export default function Header({ className = "" }) {
                 <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-1.5 p-1">
                   {user.photoURL && <Image src={user.photoURL} alt="User Avatar" width={20} height={20} className="rounded-full" />}
                   <span className="text-sm font-medium">{firstName}</span>
-                  {dropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  {dropdownOpen ? <ChevronUp size={16} className="text-primary hover:text-btBlue" /> : <ChevronDown size={16} className="text-primary hover:text-btBlue" />}
                 </button>
                 {dropdownOpen && (
-                  <div className="absolute right-0 z-50 mt-2 w-30 rounded-xl bg-white">
-                    <div className="divide-btGray flex flex-col divide-y">
-                      <Link href="/dashboard" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 rounded-t-xl px-3 py-2">
-                        <Image src="/home.svg" width={16} height={16} alt="dashboard" />
-                        <span className="text-sm">Dashboard</span>
-                      </Link>
-                      <Link href="/dashboard/orders" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
-                        <Image src="/orders.svg" width={16} height={16} alt="orders" />
-                        <span className="text-sm">Store</span>
-                      </Link>
-                      <Link href="/dashboard/inbox" className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 px-3 py-2">
-                        <Image src="/inbox.svg" width={16} height={16} alt="inbox" />
-                        <span className="text-sm">Inbox</span>
-                      </Link>
-                      <button onClick={handleLogout} className="hover:bg-headBg relative flex cursor-pointer flex-row items-center justify-start gap-3 rounded-b-xl px-3 py-2">
-                        <Image src="/logout.svg" width={16} height={16} alt="logout" />
-                        <span className="text-sm">Logout</span>
-                      </button>
-                    </div>
+                  <div className="border-btGray absolute right-0 z-50 mt-2 flex w-30 flex-col rounded-xl border bg-white p-0.5">
+                    <Link href="/dashboard" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 rounded-t-xl px-2 py-2">
+                      <House size={16} />
+                      <span className="text-xs">Dashboard</span>
+                    </Link>
+                    <Link href="/dashboard/orders" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 px-2 py-2">
+                      <Package size={16} />
+                      <span className="text-sm">Store</span>
+                    </Link>
+                    <Link href="/dashboard/inbox" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 px-2 py-2">
+                      <Mail size={16} />
+                      <span className="text-sm">Inbox</span>
+                    </Link>
+                    <div className="bg-btGray h-px w-full"></div> {/*  divider */}
+                    <button onClick={handleLogout} className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 rounded-b-xl px-2 py-2">
+                      <LogOut size={16} />
+                      <span className="text-sm">Logout</span>
+                    </button>
                   </div>
                 )}
               </div>
@@ -188,7 +186,7 @@ export default function Header({ className = "" }) {
               <Link href="/login" className="rounded-lg px-2.5 py-2 text-sm font-medium shadow">
                 Login
               </Link>
-              <Link href="/store" className="rounded-lg btn-bg px-2.5 py-2 text-sm font-medium text-white">
+              <Link href="/store" className="btn-bg rounded-lg px-2.5 py-2 text-sm font-medium text-white">
                 Shop Now
               </Link>
             </div>
