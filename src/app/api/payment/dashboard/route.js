@@ -30,8 +30,8 @@ export async function POST(req) {
       line_items,
       mode: "payment",
       customer_email: email,
-      success_url: `${req.headers.get("origin")}/dashboard?success=true`,
-      cancel_url: `${req.headers.get("origin")}/dashboard?canceled=true`,
+      success_url: `${req.headers.get("origin")}/dashboard/orders?success=true`,
+      cancel_url: `${req.headers.get("origin")}/dashboard/orders?canceled=true`,
     });
 
     return new Response(JSON.stringify({ url: session.url }), {

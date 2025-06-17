@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Sidebar from "./layouts/Sidebar";
 import TabPanel from "./layouts/TabPanel";
 import BottomNavigationBar from "./layouts/BottomNavigationBar";
@@ -11,8 +11,6 @@ import { Loading, Notify } from "notiflix";
 export default function DashboardPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const tab = searchParams.get("tab");
 
   const [activeTab, setActiveTab] = useState("dashboard");
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -30,10 +28,17 @@ export default function DashboardPage() {
   }, [loading, user]);
 
   useEffect(() => {
-    if (tab) {
-      setActiveTab(tab);
+    const params = new URLSearchParams(window.location.search);
+    const value = params.get("tab");
+
+    if (value) {
+      setActiveTab(value);
+      const newParams = new URLSearchParams(params);
+      newParams.delete("tab");
+      const newUrl = `${window.location.pathname}${newParams.toString() ? "?" + newParams.toString() : ""}`;
+      window.history.replaceState({}, "", newUrl);
     }
-  }, [tab]);
+  }, []);
 
   if (loading || !user) {
     return null;
