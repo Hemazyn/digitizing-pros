@@ -220,14 +220,14 @@ export default function CartContent() {
                         <label htmlFor="paymentMethod" className="text-primary text-sm font-medium">
                           Payment Method
                         </label>
-                        <div className="flex items-center space-x-4 w-full justify-between">
-                          <label className={`flex cursor-pointer items-center w-full justify-center h-12 rounded-lg p-2 transition-all duration-200 ease-in-out ${selectedPaymentMethod === "stripe" ? "border-btBlue border-2" : "border border-btGray"}`} onClick={() => setSelectedPaymentMethod("stripe")}>
+                        <div className="flex w-full items-center justify-between space-x-4">
+                          <label className={`flex h-12 w-full cursor-pointer items-center justify-center rounded-lg p-2 transition-all duration-200 ease-in-out ${selectedPaymentMethod === "stripe" ? "border-btBlue border-2" : "border-btGray border"}`} onClick={() => setSelectedPaymentMethod("stripe")}>
                             <Image src="/stripe.svg" alt="Stripe" width={80} height={30} objectFit="contain" />
                           </label>
-                          <label className={`flex cursor-pointer items-center w-full justify-center h-12 rounded-lg p-2 transition-all duration-200 ease-in-out ${selectedPaymentMethod === "google_pay" ? "border-btBlue border-2" : "border border-btGray"}`} onClick={() => setSelectedPaymentMethod("google_pay")}>
+                          <label className={`flex h-12 w-full cursor-pointer items-center justify-center rounded-lg p-2 transition-all duration-200 ease-in-out ${selectedPaymentMethod === "google_pay" ? "border-btBlue border-2" : "border-btGray border"}`} onClick={() => setSelectedPaymentMethod("google_pay")}>
                             <Image src="/google-pay.svg" alt="Google Pay" width={60} height={30} objectFit="contain" />
                           </label>
-                          <label className={`flex cursor-pointer items-center w-full justify-center h-12 rounded-lg p-2 transition-all duration-200 ease-in-out ${selectedPaymentMethod === "apple_pay" ? "border-btBlue border-2" : "border border-btGray"}`} onClick={() => setSelectedPaymentMethod("apple_pay")}>
+                          <label className={`flex h-12 w-full cursor-pointer items-center justify-center rounded-lg p-2 transition-all duration-200 ease-in-out ${selectedPaymentMethod === "apple_pay" ? "border-btBlue border-2" : "border-btGray border"}`} onClick={() => setSelectedPaymentMethod("apple_pay")}>
                             <Image src="/apple-pay.svg" alt="Apple Pay" width={60} height={30} objectFit="contain" />
                           </label>
                         </div>

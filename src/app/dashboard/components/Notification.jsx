@@ -78,7 +78,10 @@ export default function Notification() {
               <p className="text-primary text-xs font-medium">Order Updates</p>
               <span className="text-xxs text-btext font-medium">Receive in-app notifications when your order status changes.</span>
             </div>
-            <input type="checkbox" name="check" id="check" className="accent-btBlue" />
+            <label className="relative inline-flex cursor-pointer items-center">
+              <input type="checkbox" id="check" name="check" className="peer sr-only" />
+              <div className="peer peer-checked:bg-btBlue h-4 w-8 rounded-full bg-gray-300 after:absolute after:start-[2px] after:top-[2px] after:h-3 after:w-3 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-4"></div>
+            </label>
           </div>
         </div>
       </div>

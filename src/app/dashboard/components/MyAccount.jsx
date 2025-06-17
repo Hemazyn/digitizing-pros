@@ -31,14 +31,20 @@ export default function MyAccount() {
                 <p className="text-primary text-xs font-medium">Marketing Emails</p>
                 <span className="text-xxs text-btext font-medium">Receive emails about new features, promotions, and special offers.</span>
               </div>
-              <input type="checkbox" name="check" id="check" className="accent-btBlue border-sLine border" />
+              <label className="relative inline-flex cursor-pointer items-center">
+                <input type="checkbox" id="check" name="check" className="peer sr-only" />
+                <div className="peer peer-checked:bg-btBlue h-4 w-8 rounded-full bg-gray-300 after:absolute after:start-[2px] after:top-[2px] after:h-3 after:w-3 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-4"></div>
+              </label>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <p className="text-primary text-xs font-medium">Newsletter</p>
                 <span className="text-xxs text-btext font-medium">Receive our monthly newsletter with embroidery tips and industry news.</span>
               </div>
-              <input type="checkbox" name="check" id="check" className="accent-btBlue border-sLine border" />
+              <label className="relative inline-flex cursor-pointer items-center">
+                <input type="checkbox" id="check" name="check" className="peer sr-only" />
+                <div className="peer peer-checked:bg-btBlue h-4 w-8 rounded-full bg-gray-300 after:absolute after:start-[2px] after:top-[2px] after:h-3 after:w-3 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-4"></div>
+              </label>
             </div>
           </div>
         </form>
