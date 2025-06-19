@@ -2,10 +2,10 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function Aside() {
-  const [showCategories, setShowCategories] = useState(true);
-  const [showPrice, setShowPrice] = useState(true);
+  const [showCategories, setShowCategories] = useState(false);
+  const [showPrice, setShowPrice] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 1000]);
-  const [showTags, setShowTags] = useState(true);
+  const [showTags, setShowTags] = useState(false);
 
   const tags = ["Corporate", "Floral", "Sports", "Monogram", "Animals", "Holidays", "Vintage", "Children", "Custom"];
 

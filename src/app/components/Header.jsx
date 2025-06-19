@@ -164,7 +164,7 @@ export default function Header({ className = "" }) {
                       <House size={16} />
                       <span className="text-xs">Dashboard</span>
                     </Link>
-                    <Link href="/dashboard/orders" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 px-2 py-2">
+                    <Link href="/store" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 px-2 py-2">
                       <Package size={16} />
                       <span className="text-sm">Store</span>
                     </Link>

@@ -102,7 +102,6 @@ export default function StoreItemPage() {
     fetchDetails();
     return () => {
       Loading.remove();
-      console.log("useEffect cleanup: Loading.remove() called.");
     };
   }, [publicId]);
 
@@ -160,64 +159,66 @@ export default function StoreItemPage() {
 
   return (
     <>
-      <Header className="border-btGray border-b" />
-      <main className="min-h-screen flex-1 pt-16">
-        <div className="container mx-auto p-4 md:p-8">
-          <Link href="/store" className="text-primary hover:text-btBlue mb-6 flex cursor-pointer items-center">
-            <Image src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
-            Back to Store
-          </Link>
-          <div className="grid grid-cols-1 gap-8 bg-white md:grid-cols-10">
-            {/* Main Product Image & Thumbnails */}
-            <div className="md:col-span-6">
-              <Image src={mainDisplayImage || mainImagePlaceholder} alt={mainDisplayImage ? getDisplayTitle(resource) : "Loading image"} width={600} height={400} priority className="mb-4 h-auto w-full rounded-lg object-cover shadow-md" />
-              <div className="flex space-x-2 overflow-x-auto pb-2">
-                {[...Array(4)].map((_, index) => (
-                  <Image key={index} src={resource?.secure_url || thumbnailPlaceholder} alt={resource?.secure_url ? `${getDisplayTitle(resource)} thumbnail ${index + 1}` : "Loading thumbnail"} className={`h-20 w-20 cursor-pointer rounded-md border-2 object-cover transition ${mainDisplayImage === resource?.secure_url ? "border-none" : "border-transparent"}`} />
-                ))}
-              </div>
-            </div>
-            {/* Product Details & Options */}
-            <div className="space-y-10 md:col-span-4">
-              <div className="space-y-5">
-                <div className="space-y-1">
-                  <div className="space-y-1">
-                    <h1 className="text-primary font-bricolage text-3xl font-bold">{getDisplayTitle(resource)}</h1>
-                    <p className="text-primary text-[20px] font-semibold">${calculateDisplayPrice()}</p>
-                  </div>
-                  <p className="text-btext text-sm">Create a stunning {getDisplayTitle(resource)} with this complete embroidery kit. Perfect for beginners and experienced crafters alike, this kit includes everything you need to create a beautiful piece of handmade art.</p>
+      <div className="relative flex flex-col">
+        <Header className="border-btGray border-b" />
+        <main className="min-h-screen flex-1 pt-16">
+          <div className="container mx-auto p-4 md:p-8">
+            <Link href="/store" className="text-primary hover:text-btBlue mb-6 flex cursor-pointer items-center">
+              <Image src="/arrow-left.svg" alt="Go Back" width={16} height={16} className="mr-1 inline-block" />
+              Back to Store
+            </Link>
+            <div className="grid grid-cols-1 gap-8 bg-white md:grid-cols-10">
+              {/* Main Product Image & Thumbnails */}
+              <div className="md:col-span-6">
+                <Image src={mainDisplayImage || mainImagePlaceholder} alt={mainDisplayImage ? getDisplayTitle(resource) : "Loading image"} width={600} height={400} priority className="mb-4 h-auto w-full rounded-lg object-cover shadow-md" />
+                <div className="flex space-x-2 overflow-x-auto pb-2">
+                  {[...Array(4)].map((_, index) => (
+                    <Image key={index} src={resource?.secure_url || thumbnailPlaceholder} alt={resource?.secure_url ? `${getDisplayTitle(resource)} thumbnail ${index + 1}` : "Loading thumbnail"} width={80} height={80} className={`cursor-pointer rounded-md border-2 object-cover transition ${mainDisplayImage === resource?.secure_url ? "border-none" : "border-transparent"}`} />
+                  ))}
                 </div>
               </div>
-              <button disabled={!user} onClick={handleToggleCart} className={`w-full rounded-md py-3 text-lg font-semibold text-white transition ${isItemInCart ? "bg-red-600 hover:bg-red-700" : "btn-bg cursor-pointer hover:bg-btBlue"} ${!user && "cursor-not-allowed opacity-50"}`}>
-                {isItemInCart ? "Remove from Cart" : user ? "Add to Cart" : "Login to Add"}
-              </button>
-            </div>
-          </div>
-          {relatedProducts.length > 0 && (
-            <section className="mt-8 md:mt-12">
-              <h2 className="text-primary mb-2 text-lg font-semibold">You May Also Like</h2>
-              <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-                {relatedProducts.map((product) => (
-                  <div
-                    key={product.public_id}
-                    onClick={() => {
-                      const encodedPublicId = encodeURIComponent(product.public_id);
-                      router.push(`/store/${encodedPublicId}`);
-                    }}
-                    className="cursor-pointer space-y-3 rounded-lg p-2 shadow transition hover:shadow-md">
-                    <div className="relative aspect-square w-full overflow-hidden rounded-lg">
-                      <Image src={product.secure_url || thumbnailPlaceholder} alt={product.secure_url ? getDisplayTitle(product) : "Loading product"} layout="fill" objectFit="cover" className="absolute inset-0 h-full w-full rounded-lg" />
+              {/* Product Details & Options */}
+              <div className="space-y-10 md:col-span-4">
+                <div className="space-y-5">
+                  <div className="space-y-1">
+                    <div className="space-y-1">
+                      <h1 className="text-primary font-bricolage text-3xl font-bold">{getDisplayTitle(resource)}</h1>
+                      <p className="text-primary text-[20px] font-semibold">${calculateDisplayPrice()}</p>
                     </div>
-                    <h3 className="text-primary overflow-hidden text-xs font-semibold text-ellipsis whitespace-nowrap">{getDisplayTitle(product)}</h3>
-                    <p className="text-primary text-base font-medium">${parseFloat(product.metadata?.price || defaultPrice).toFixed(2)}</p>
+                    <p className="text-btext text-sm">Create a stunning {getDisplayTitle(resource)} with this complete embroidery kit. Perfect for beginners and experienced crafters alike, this kit includes everything you need to create a beautiful piece of handmade art.</p>
                   </div>
-                ))}
+                </div>
+                <button disabled={!user} onClick={handleToggleCart} className={`w-full rounded-md py-3 text-lg font-semibold text-white transition ${isItemInCart ? "bg-red-600 hover:bg-red-700" : "btn-bg hover:bg-btBlue cursor-pointer"} ${!user && "cursor-not-allowed opacity-50"}`}>
+                  {isItemInCart ? "Remove from Cart" : user ? "Add to Cart" : "Login to Add"}
+                </button>
               </div>
-            </section>
-          )}
-        </div>
-      </main>
-      <Footer />
+            </div>
+            {relatedProducts.length > 0 && (
+              <section className="mt-8 md:mt-12">
+                <h2 className="text-primary mb-2 text-lg font-semibold">You May Also Like</h2>
+                <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+                  {relatedProducts.map((product) => (
+                    <div
+                      key={product.public_id}
+                      onClick={() => {
+                        const encodedPublicId = encodeURIComponent(product.public_id);
+                        router.push(`/store/${encodedPublicId}`);
+                      }}
+                      className="cursor-pointer space-y-3 rounded-lg p-2 shadow transition hover:shadow-md">
+                      <div className="relative aspect-square w-full overflow-hidden rounded-lg">
+                        <Image src={product.secure_url || thumbnailPlaceholder} alt={product.secure_url ? getDisplayTitle(product) : "Loading product"} layout="fill" objectFit="cover" className="absolute inset-0 h-full w-full rounded-lg" />
+                      </div>
+                      <h3 className="text-primary overflow-hidden text-xs font-semibold text-ellipsis whitespace-nowrap">{getDisplayTitle(product)}</h3>
+                      <p className="text-primary text-base font-medium">${parseFloat(product.metadata?.price || defaultPrice).toFixed(2)}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+        </main>
+        <Footer />
+      </div>
     </>
   );
 }
