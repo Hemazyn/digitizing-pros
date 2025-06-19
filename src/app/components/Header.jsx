@@ -101,7 +101,7 @@ export default function Header({ className = "" }) {
                       <Package size={16} />
                       <span className="text-sm">Store</span>
                     </Link>
-                    <Link href="dashboard/inbox" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 px-2 py-2">
+                    <Link href="dashboard?tab=inbox" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 px-2 py-2">
                       <Mail size={16} />
                       <span className="text-sm">Inbox</span>
                     </Link>
@@ -168,7 +168,7 @@ export default function Header({ className = "" }) {
                       <Package size={16} />
                       <span className="text-sm">Store</span>
                     </Link>
-                    <Link href="/dashboard/inbox" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 px-2 py-2">
+                    <Link href="/dashboard?tab=inbox" className="text-primary hover:text-btBlue relative flex cursor-pointer flex-row items-center justify-start gap-3 px-2 py-2">
                       <Mail size={16} />
                       <span className="text-sm">Inbox</span>
                     </Link>

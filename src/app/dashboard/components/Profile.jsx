@@ -1,4 +1,11 @@
+import { useAuth } from "@/context/AuthContext";
+
 export default function Profile() {
+  const { user } = useAuth();
+  const photoURL = user?.photoURL || "/photoURL.svg";
+  const firstName = user?.displayName || "Buddy!";
+  const emailAddress = user?.email || "Buddy!";
+
   return (
     <div className="bg-cardBg3 border-btGray max-h-full w-full rounded-[10px] border">
       <div className="mx-auto flex w-[92%] flex-col space-y-4 py-5">
@@ -6,13 +13,13 @@ export default function Profile() {
         <form action="" className="form space-y-6">
           <div className="space-y-3">
             <div className="flex flex-col gap-2">
-              <input type="image" src="/photoURL.svg" alt="user photo" className="h-14 w-14" />
+              <input type="image" src={photoURL} alt="user photo" className="h-14 w-14" />
               <span className="text-btext text-xxs">Upload a new Avatar</span>
             </div>
 
             <div className="flex flex-col gap-2">
               <label className="text-primary block text-xs font-medium">Display Name</label>
-              <input placeholder="Sidiat Bruma" type="text" className="border-sLine w-full rounded-lg border px-4 py-2 outline-0 placeholder:text-xs placeholder:font-medium" />
+              <input placeholder={firstName} type="text" className="border-sLine w-full rounded-lg border px-4 py-2 outline-0 placeholder:text-xs placeholder:font-medium" />
               <span className="text-btext text-xxs">This is the name that will be displayed to other users.</span>
             </div>
             <div className="flex flex-col gap-2">
@@ -30,7 +37,7 @@ export default function Profile() {
             <div className="grid grid-cols-2 space-x-2">
               <div className="flex flex-col gap-2">
                 <label className="text-primary block text-xs font-medium">Business Email</label>
-                <input type="email" placeholder="Info@anelkastore.com" className="border-sLine w-full rounded-lg border px-4 py-2 outline-0 placeholder:text-xs placeholder:font-medium" />
+                <input type="email" placeholder={emailAddress} className="border-sLine w-full rounded-lg border px-4 py-2 outline-0 placeholder:text-xs placeholder:font-medium" />
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-primary block text-xs font-medium">Business Phone</label>
