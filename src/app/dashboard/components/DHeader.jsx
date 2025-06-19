@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown, ChevronUp, CircleUser, Settings, LogOut } from "lucide-react";
+import { House, ChevronDown, ChevronUp, CircleUser, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { auth } from "@/firebase/firebase";
 import { signOut } from "firebase/auth";
@@ -80,6 +80,10 @@ export default function Header({ activeTab = "dashboard", onMenuToggle }) {
           </button>
           {dropdownOpen && (
             <div className="border-btGray absolute right-0 z-50 mt-3.5 flex w-30 flex-col rounded-xl border bg-white p-0.5">
+              <Link href="/" className="text-primary hover:text-btBlue relative flex cursor-pointer items-center justify-start gap-3 rounded-t-xl px-3 py-2">
+                <House size={16} />
+                <span className="text-sm">Home</span>
+              </Link>
               <Link href="#" className="text-primary hover:text-btBlue relative flex cursor-pointer items-center justify-start gap-3 rounded-t-xl px-3 py-2">
                 <CircleUser size={16} />
                 <span className="text-sm">Profile</span>

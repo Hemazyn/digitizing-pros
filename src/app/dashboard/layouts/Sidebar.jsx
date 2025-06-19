@@ -82,8 +82,7 @@ export default function Sidebar({ activeTab, setActiveTab, isMobileDrawer = fals
             );
           })}
         </nav>
-        {/* Divider */}
-        <div className="bg-btGray my-4 h-px w-full" />
+        <div className="bg-btGray my-4 h-px w-full" /> {/* Divider */}
         {(!collapsed || isMobileDrawer) && (
           <div onClick={goToPoints} className="no-underline">
             <div className={`points flex cursor-pointer flex-col gap-2.5 rounded-lg border p-2 transition-all duration-200 hover:shadow-md ${activeTab === "points" ? "border-btGray bg-pointBg" : "border-btGray bg-white"}`}>
@@ -104,6 +103,12 @@ export default function Sidebar({ activeTab, setActiveTab, isMobileDrawer = fals
               </div>
             </div>
           </div>
+        )}
+        <div className="bg-btGray my-4 h-px w-full" /> {/* Divider */}
+        {isMobileDrawer && (
+          <Link href="/" className="btn-bg flex w-full items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white">
+            Home Page
+          </Link>
         )}
         {(!collapsed || isMobileDrawer) && (
           <div className="mt-10 flex w-fit cursor-pointer items-center justify-center rounded-full bg-white p-1.5 shadow">
