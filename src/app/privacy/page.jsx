@@ -13,45 +13,55 @@ export default function PrivacyPolicy() {
       <main className="text-btext mx-auto max-w-4xl flex-grow space-y-6 px-6 py-12 text-sm leading-relaxed">
         <section>
           <h2 className="font-bold">Privacy Policy</h2>
-          <p>
-            Effective Date: [Insert Date]
-            <br />
-            Business Name: The Digitizing Pros, LLC
-            <br />
-            Location: Chicago, Illinois, USA
-          </p>
+          <p>Effective Date: June 21, 2025</p>
         </section>
         <section>
           <h2 className="font-bold">1. Information We Collect</h2>
-          <p>We collect information when you place an order or interact with our site, including name, email, contact info, billing, file uploads, website usage data (browser, IP address, device type), etc.</p>
+          <p>We collect personal info (name, email, address, payment info), technical info (IP, browser), and design files you upload.</p>
         </section>
         <section>
           <h2 className="font-bold">2. How We Use Your Information</h2>
-          <p>We use your info to fulfill orders, support, send updates/promotions (if opted in), and improve our services. We do not share personal info with third parties for marketing.</p>
+          <p>We use your data to process orders, communicate, improve services, and prevent fraud.</p>
         </section>
         <section>
-          <h2 className="font-bold">3. Data Protection & Security</h2>
-          <p>All transactions are encrypted via SSL. Access to personal data is limited to authorized personnel.</p>
+          <h2 className="font-bold">3. Payment Information</h2>
+          <p>Payments are processed securely via Stripe, Google Pay, or Apple Pay. We do not store payment data.</p>
         </section>
         <section>
-          <h2 className="font-bold">4. Cookies & Website Tracking</h2>
-          <p>We use cookies for a better user experience and traffic analysis. Users can adjust settings via their browser.</p>
+          <h2 className="font-bold">4. Sharing of Information</h2>
+          <p>We do not sell or rent your data. We share only with trusted service providers as needed.</p>
         </section>
         <section>
-          <h2 className="font-bold">5. Third-Party Services</h2>
-          <p>We use third-party services like Stripe, PayPal, and Google Analytics. Their privacy policies apply accordingly.</p>
+          <h2 className="font-bold">5. Data Security</h2>
+          <p>We protect your data with appropriate technical and organizational measures.</p>
         </section>
         <section>
           <h2 className="font-bold">6. Your Rights</h2>
-          <p>You may access, update, or delete your data, opt out of emails, or contact us regarding your data at any time.</p>
+          <p>You may request access, update, or deletion of your data by emailing info@thedigitizingpros.com.</p>
         </section>
         <section>
-          <h2 className="font-bold">7. Children's Privacy</h2>
-          <p>Our services are not directed toward children under 13. We do not knowingly collect info from them.</p>
+          <h2 className="font-bold">7. Cookies & Tracking</h2>
+          <p>We use cookies to enhance your experience. You may disable cookies in your browser.</p>
         </section>
         <section>
-          <h2 className="font-bold">8. Changes to This Policy</h2>
-          <p>We may update this policy periodically. The latest version will be on our site with the effective date.</p>
+          <h2 className="font-bold">8. Third-Party Links</h2>
+          <p>We are not responsible for the privacy practices of third-party websites.</p>
+        </section>
+        <section>
+          <h2 className="font-bold">9. Children's Privacy</h2>
+          <p>We do not knowingly collect data from individuals under 18.</p>
+        </section>
+        <section>
+          <h2 className="font-bold">10. Changes to This Policy</h2>
+          <p>We may update this policy at any time. Updates will be posted with a new effective date.</p>
+        </section>
+        <section>
+          <h2 className="font-bold">Contact Us</h2>
+          <p>
+            info@thedigitizingpros.com
+            <br />
+            233 E Wacker Dr, Suite 1207, Chicago, IL 60601
+          </p>
         </section>
       </main>
       <Footer />

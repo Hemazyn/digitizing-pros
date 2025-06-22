@@ -172,7 +172,7 @@ export default function StoreItemPage() {
               <div className="md:col-span-6">
                 <Image src={mainDisplayImage || mainImagePlaceholder} alt={mainDisplayImage ? getDisplayTitle(resource) : "Loading image"} width={600} height={400} priority className="mb-4 h-auto w-full rounded-lg object-cover shadow-md" />
                 <div className="flex space-x-2 overflow-x-auto pb-2">
-                  {[...Array(4)].map((_, index) => (
+                  {[...Array(1)].map((_, index) => (
                     <Image key={index} src={resource?.secure_url || thumbnailPlaceholder} alt={resource?.secure_url ? `${getDisplayTitle(resource)} thumbnail ${index + 1}` : "Loading thumbnail"} width={80} height={80} className={`cursor-pointer rounded-md border-2 object-cover transition ${mainDisplayImage === resource?.secure_url ? "border-none" : "border-transparent"}`} />
                   ))}
                 </div>

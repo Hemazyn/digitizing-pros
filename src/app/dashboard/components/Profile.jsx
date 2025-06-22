@@ -4,7 +4,7 @@ export default function Profile() {
   const { user } = useAuth();
   const photoURL = user?.photoURL || "/photoURL.svg";
   const firstName = user?.displayName || "Buddy!";
-  const emailAddress = user?.email || "Buddy!";
+  const emailAddress = user?.email || "example@gmail.com";
 
   return (
     <div className="bg-cardBg3 border-btGray max-h-full w-full rounded-[10px] border">
@@ -24,7 +24,7 @@ export default function Profile() {
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-primary block text-xs font-medium">Bio</label>
-              <textarea name="bio" id="bio" cols="3" placeholder="Owner of Custom Embroidery Shop with over 10 years of experience in the industry." className="border-sLine w-full rounded-lg border px-4 py-2 outline-0 placeholder:text-xs placeholder:font-medium"></textarea>
+              <textarea name="bio" id="bio" cols="3" placeholder="" className="border-sLine w-full rounded-lg border px-4 py-2 outline-0 placeholder:text-xs placeholder:font-medium"></textarea>
               <span className="text-btext text-xxs">This is the name that will be displayed to other users.</span>
             </div>
           </div>
@@ -32,7 +32,7 @@ export default function Profile() {
             <h4 className="text-primary text-xs font-semibold">Business Information</h4>
             <div className="flex flex-col gap-2">
               <label className="text-primary block text-xs font-medium">Company Name</label>
-              <input placeholder="Anelka Store" className="border-sLine w-full rounded-lg border px-4 py-2 outline-0 placeholder:text-xs placeholder:font-medium" />
+              <input placeholder="" className="border-sLine w-full rounded-lg border px-4 py-2 outline-0 placeholder:text-xs placeholder:font-medium" />
             </div>
             <div className="grid grid-cols-2 space-x-2">
               <div className="flex flex-col gap-2">
@@ -41,7 +41,7 @@ export default function Profile() {
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-primary block text-xs font-medium">Business Phone</label>
-                <input placeholder="+1 (676)782-7213" className="border-sLine w-full rounded-lg border px-4 py-2 outline-0 placeholder:text-xs placeholder:font-medium" />
+                <input placeholder="" className="border-sLine w-full rounded-lg border px-4 py-2 outline-0 placeholder:text-xs placeholder:font-medium" />
               </div>
             </div>
             <div className="flex flex-col gap-2">
