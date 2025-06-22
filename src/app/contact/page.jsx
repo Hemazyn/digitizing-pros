@@ -105,7 +105,7 @@ export default function ContactPage() {
           </div>
           <div>
             <p className="text-primary text-base font-semibold">Phone</p>
-            <p className="text-btext text-sm font-medium">1 (219) 716-0757</p>
+            <p className="text-btext text-sm font-medium">+1 (219) 716-0757</p>
           </div>
           <div>
             <p className="text-primary text-base font-semibold">Email Address</p>
@@ -113,11 +113,9 @@ export default function ContactPage() {
           </div>
         </div>
       </main>
-
       <div className="w-full">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2968.4494132319835!2d-87.6374303241692!3d41.878876171270286!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e2cae6e37ef75%3A0x2a8b53e226a5a2a4!2sWillis%20Tower!5e0!3m2!1sen!2sus!4v1685154898983!5m2!1sen!2sus" width="100%" height="400" allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="border-0"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2968.866525291917!2d-87.61909632416962!3d41.8870919712671!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e2cafbd0a481d%3A0x6849a7f020b413a0!2s233%20E%20Wacker%20Dr%20%231207%2C%20Chicago%2C%20IL%2060601%2C%20USA!5e0!3m2!1sen!2sus!4v1719074812345!5m2!1sen!2sus" width="100%" height="400" allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="border-0"></iframe>
       </div>
-
       <CTA />
       <Footer />
     </div>

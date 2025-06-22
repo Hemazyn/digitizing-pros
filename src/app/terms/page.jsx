@@ -13,53 +13,42 @@ export default function TermsPage() {
         <div className="text-btext space-y-6 text-sm leading-relaxed">
           <section>
             <h2 className="font-bold">Terms of Agreement</h2>
-            <p>
-              Digitizing Pros LLC
-              <br />
-              contact@digitizingpros.com
-              <br />
-              123 Embroidery Lane, Threads Town, USA
-            </p>
           </section>
           <section>
             <h2 className="font-bold">1. Services Provided</h2>
-            <p>Digitizing Pros LLC ("we", "our", or "us") provides embroidery digitizing, vector conversion, custom design, and patch creation services. We support multiple file types and deliver designs compatible with major embroidery machines.</p>
+            <p>The Digitizing Pros, LLC ("we", "our", "us") offers embroidery digitizing, vector conversion, custom design creation, and patch production services. We deliver files compatible with major embroidery software and machines, including DST, EMB, PES, PXF, JEF, CND, HUS, NGS, and EXP. We utilize Wilcom (EMB), Tajima Pulse (PXF), and Wings XP (NGS) for optimal output quality.</p>
           </section>
           <section>
             <h2 className="font-bold">2. Order Placement & Payment</h2>
-            <p>All orders must be submitted via our official website. Full payment is required at the time of order. We accept all major credit cards and PayPal.</p>
+            <p>All orders must be submitted through our official website. Payment is required upfront. We accept Stripe, Google Pay, and Apple Pay..</p>
           </section>
           <section>
             <h2 className="font-bold">3. Turnaround Time</h2>
-            <p>Standard turnaround time is 24–48 hours. Rush services may be available on request.</p>
+            <ul>
+              <li>Simple to Moderately Complex Logos: 12-24 hours</li>
+              <li>Complex Logos: 2-3 business days</li>
+              <li>Patches: 10-15 business days with free shipping</li>
+            </ul>
           </section>
           <section>
             <h2 className="font-bold">4. Client Responsibilities</h2>
-            <p>Clients are responsible for providing accurate specifications. We provide design approval before final delivery.</p>
+            <p>Clients must submit high-resolution images and accurate sizing. Design previews are provided for approval before final delivery.</p>
           </section>
           <section>
             <h2 className="font-bold">5. Revisions & Refund Policy</h2>
-            <p>Limited revisions are included. Refunds are not issued after final delivery unless part of our Satisfaction Guarantee.</p>
+            <p>Unlimited minimal revisions are included. We offer a 100% money-back guarantee before final file delivery. No refunds are issued after delivery. No returns or refunds are accepted on patch orders.</p>
           </section>
           <section>
             <h2 className="font-bold">6. Ownership & Usage Rights</h2>
-            <p>Clients retain rights to the delivered files. We reserve the right to use completed work for promotional purposes unless clients opt out.</p>
+            <p>Clients retain full rights to delivered files. We may showcase work for promotional purposes unless otherwise requested in writing.</p>
           </section>
           <section>
             <h2 className="font-bold">7. Limitation of Liability</h2>
-            <p>Digitizing Pros LLC is not liable for damages from the use or inability to use our services.</p>
+            <p>We are not liable for any damages resulting from the use or inability to use our services.</p>
           </section>
           <section>
-            <h2 className="font-bold">8. Changes to Agreement</h2>
-            <p>We reserve the right to update these terms at any time. Clients will be notified via our website or email.</p>
-          </section>
-          <section>
-            <h2 className="font-bold">Contact Us</h2>
-            <p>
-              support@digitizingpros.com
-              <br />
-              +1 (234) 567-8901
-            </p>
+            <h2 className="font-bold">8. Changes to This Agreement</h2>
+            <p>We may update these terms at any time. Changes will be posted on our website.</p>
           </section>
         </div>
       </main>
