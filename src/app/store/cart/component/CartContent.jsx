@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
+import OrderConfirm from "../component/OrderConfirm";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -25,13 +26,11 @@ export default function CartContent() {
 
   const [isClient, setIsClient] = useState(false);
   const searchParams = useSearchParams();
+  const showOrderConfirm = searchParams.get("success") === "true";
 
   useEffect(() => {
     if (searchParams?.get("canceled") === "true") {
       Notify.failure("Order not successful", { timeout: 3000 });
-      router.replace("/store/cart");
-    } else if (searchParams?.get("success") === "true") {
-      Notify.success("Order successful", { timeout: 3000 });
       router.replace("/store/cart");
     }
   }, [searchParams]);
@@ -212,12 +211,12 @@ export default function CartContent() {
                           </label>
                           <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="sidaibruma@gmail.com" className="border-btGray text-primary placeholder:text-btext w-full rounded-md border p-3 text-sm ring-0 outline-0" autoComplete="email" required />
                         </div>
-                        {/* <div className="flex flex-col space-y-1.5">
-                        <label htmlFor="shippingAddress" className="text-primary text-sm font-medium">
-                          Shipping Address
-                        </label>
-                        <input type="text" id="shippingAddress" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main Street" className="border-btGray text-primary placeholder:text-btext w-full rounded-md border p-3 text-sm ring-0 outline-0" required />
-                      </div> */}
+                        <div className="flex flex-col space-y-1.5">
+                          <label htmlFor="shippingAddress" className="text-primary text-sm font-medium">
+                            Shipping Address
+                          </label>
+                          <input type="text" id="shippingAddress" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main Street" className="border-btGray text-primary placeholder:text-btext w-full rounded-md border p-3 text-sm ring-0 outline-0" required />
+                        </div>
                         <div className="flex flex-col space-y-1.5">
                           <label htmlFor="paymentMethod" className="text-primary text-sm font-medium">
                             Payment Method
@@ -234,7 +233,7 @@ export default function CartContent() {
                             </label>
                           </div>
                         </div>
-                        <button type="submit" onClick={handlePayButtonClick} disabled={!email || cartItems.length === 0} className="btn-bg w-full cursor-pointer rounded-lg py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60">
+                        <button type="submit" onClick={handlePayButtonClick} disabled={!email || !address || cartItems.length === 0} className="btn-bg w-full cursor-pointer rounded-lg py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60">
                           Pay ${total.toFixed(2)}
                         </button>
                       </form>
@@ -243,6 +242,11 @@ export default function CartContent() {
                 </div>
               </div>
             </div>
+            {showOrderConfirm && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                <OrderConfirm cartItems={cartItems} />
+              </div>
+            )}
           </main>
         )}
         <Footer />

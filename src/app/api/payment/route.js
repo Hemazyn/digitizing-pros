@@ -5,8 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { cartItems, selectedPaymentMethod } = body;
-
+    const { cartItems, selectedPaymentMethod, email } = body;
     const taxRate = 0.07;
     const basePrice = 2.99;
     const finalPriceWithTax = basePrice + taxRate;
@@ -41,6 +40,11 @@ export async function POST(req) {
       mode: "payment",
       success_url: `${req.headers.get("origin")}/store/cart?success=true`,
       cancel_url: `${req.headers.get("origin")}/store/cart?canceled=true`,
+      customer_email: email,
+      metadata: {
+        email,
+        cartSummary: `Items: ${cartItems.length}`,
+      },
     });
 
     return new Response(JSON.stringify({ id: session.id }), {

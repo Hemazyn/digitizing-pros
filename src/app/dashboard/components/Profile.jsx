@@ -13,8 +13,8 @@ export default function Profile() {
         <form action="" className="form space-y-6">
           <div className="space-y-3">
             <div className="flex flex-col gap-2">
-              <input type="image" src={photoURL} alt="user photo" className="h-14 w-14" />
-              <span className="text-btext text-xxs">Upload a new Avatar</span>
+              <input type="image" src={photoURL} alt="user photo" className="border-btGray h-14 w-14 rounded-full border" />
+              <span className="text-btBlue text-xxs border-btBlue w-fit cursor-pointer rounded-md border p-1">Upload a new Avatar</span>
             </div>
 
             <div className="flex flex-col gap-2">

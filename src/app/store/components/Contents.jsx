@@ -21,7 +21,10 @@ export default function Contents({ searchTerm }) {
     const fetchData = async () => {
       try {
         setLoading(true);
-        Loading.standard("Fetching Products...");
+        Loading.standard({
+          svgColor: "#4538cb",
+          svgSize: "50px",
+        });
         const fetchedImages = await fetchImagesFromCloudinary();
         // const fetchedPdfs = await fetchPdfsFromCloudinary();
         setImages(fetchedImages);
