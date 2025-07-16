@@ -9,11 +9,11 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { defaultPrice } from "../../../constants/index";
-import { Notify, Loading } from "notiflix";
+import Notiflix, { Notify, Loading } from "notiflix";
 import { loadStripe } from "@stripe/stripe-js";
 
 export default function CartContent() {
-  const { cartItems, updateCartItemQuantity, removeFromCart, totalItemsInCart, cartTotalPrice } = useCart();
+  const { cartItems = [], updateCartItemQuantity, removeFromCart, totalItemsInCart, cartTotalPrice } = useCart() || {};
   const { user, loading: authLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
@@ -27,6 +27,10 @@ export default function CartContent() {
   const [isClient, setIsClient] = useState(false);
   const searchParams = useSearchParams();
   const showOrderConfirm = searchParams.get("success") === "true";
+
+  const getItemImage = (item) => {
+    return item?.secure_url || item?.image || item?.metadata?.secure_url || item?.metadata?.image || item?.metadata?.url || "/images/placeholder.jpg";
+  };
 
   useEffect(() => {
     if (searchParams?.get("canceled") === "true") {
@@ -81,38 +85,128 @@ export default function CartContent() {
 
   const handlePayButtonClick = async (event) => {
     event.preventDefault();
+
     const stripe = await stripePromise;
+
+    if (!stripe) {
+      Notify.failure("Stripe not loaded. Please refresh and try again.");
+      return;
+    }
+    console.log("Cart Items:", cartItems);
+    const validatedItems = cartItems.map((item) => {
+      const rawPrice = item.price || item.metadata?.price || defaultPrice;
+      const parsedPrice = parseFloat(rawPrice);
+
+      return {
+        ...item,
+        name: getDisplayTitle(item),
+        price: isNaN(parsedPrice) || parsedPrice <= 0 ? parseFloat(defaultPrice) : parsedPrice,
+      };
+    });
+
+    const invalidItems = validatedItems.filter((item) => !item.price || isNaN(item.price) || item.price <= 0);
+
+    if (invalidItems.length > 0) {
+      console.error("Invalid items in cart:", invalidItems);
+      Notify.failure("Some items in your cart have invalid prices. Please remove or update them.");
+      return;
+    }
+
+    if (!email || !address) {
+      Notify.failure("Please provide a valid email and shipping address.");
+      return;
+    }
+
     try {
-      Loading.dots("Please wait while we process your payment...");
+      Loading.dots("Processing payment...");
+
       const response = await fetch("/api/payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ cartItems, email, selectedPaymentMethod }),
+        body: JSON.stringify({
+          cartItems: validatedItems,
+          email: email || user?.email,
+          selectedPaymentMethod,
+        }),
       });
-
-      if (!response.ok) {
-        const text = await response.text();
-        console.error("Payment error response:", text);
-        Notify.failure("Failed to initiate payment.");
-        return;
-      }
 
       const data = await response.json();
 
-      if (data.id) {
-        stripe.redirectToCheckout({ sessionId: data.id });
-      } else {
-        Notify.failure("Failed to create checkout session.");
-        Loading.remove();
+      if (!response.ok) {
+        console.error("Payment API error response:", data);
+        throw new Error(data?.error || "Payment failed. Please try again.");
       }
+
+      if (!data?.id) {
+        console.error("Stripe session ID not returned:", data);
+        throw new Error("Could not initiate payment session.");
+      }
+
+      if (!cartItems || cartItems.length === 0) {
+        Notify.failure("Your cart is empty.");
+        return;
+      }
+
+      await stripe.redirectToCheckout({ sessionId: data.id });
     } catch (error) {
-      console.error("Payment error:", error);
-      Notify.failure("An unexpected error occurred.");
+      console.error("Payment processing error:", error);
+      Notify.failure(error.message || "Something went wrong during payment.");
+    } finally {
       Loading.remove();
     }
   };
+
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+
+    if (!authLoading && user?.uid && sessionId) {
+      const saveBilling = async () => {
+        if (!user) return;
+
+        try {
+          const token = await user.getIdToken();
+
+          const res = await fetch("/api/fetch-checkout-session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sessionId }),
+          });
+
+          const data = await res.json();
+
+          const billingData = {
+            invoice: data?.id || `INV-${Date.now()}`,
+            amount: `$${(data?.amount_total / 100).toFixed(2)}`,
+            date: new Date().toISOString(),
+            actions: "View, Download",
+            card: data?.payment_method_details?.card || null,
+          };
+
+          const saveRes = await fetch("/api/save-billing-history", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ billing: billingData }),
+          });
+
+          const saveData = await saveRes.json();
+          console.log("Billing save response:", saveData);
+
+          if (!saveRes.ok) {
+            Notiflix.Notify.failure("❌ Failed to save billing history");
+          }
+        } catch (err) {
+          console.error("Error during billing save:", err);
+        }
+      };
+
+      saveBilling();
+    }
+  }, [searchParams, user, authLoading]);
 
   if (!isClient || authLoading || !user) {
     return (
@@ -154,7 +248,7 @@ export default function CartContent() {
                       {cartItems.map((item) => (
                         <div key={`${item.public_id}`} className="flex gap-5 rounded-[16px] p-2 shadow">
                           <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg">
-                            <Image src={item.secure_url || "/images/placeholder.jpg"} alt={getDisplayTitle(item)} layout="fill" objectFit="cover" className="rounded-lg" />
+                            <Image src={getItemImage(item)} alt={getDisplayTitle(item)} layout="fill" objectFit="cover" className="rounded-lg" />
                           </div>
                           <div className="flex w-full flex-row justify-between space-x-2">
                             <div className="flex flex-col gap-1 md:gap-3">
