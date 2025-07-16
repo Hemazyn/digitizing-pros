@@ -1,22 +1,31 @@
 import admin from "firebase-admin";
 
-let serviceAccount = {};
+function getServiceAccountFromEnv() {
+  const base64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64;
 
-try {
-  const base64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64 || "";
-  const decoded = Buffer.from(base64, "base64").toString("utf8");
-  serviceAccount = JSON.parse(decoded);
-
-  if (typeof serviceAccount.project_id !== "string") {
-    throw new Error("Missing project_id in service account");
+  if (!base64) {
+    throw new Error("FIREBASE_SERVICE_ACCOUNT_BASE64 is not set.");
   }
-} catch (err) {
-  console.error("Invalid FIREBASE_SERVICE_ACCOUNT_BASE64:", err);
+
+  try {
+    const decoded = Buffer.from(base64, "base64").toString("utf8");
+    const serviceAccount = JSON.parse(decoded);
+
+    if (typeof serviceAccount.project_id !== "string") {
+      throw new Error("Missing or invalid 'project_id' in service account.");
+    }
+
+    return serviceAccount;
+  } catch (err) {
+    console.error("Invalid FIREBASE_SERVICE_ACCOUNT_BASE64:", err);
+    throw new Error("Failed to parse Firebase service account.");
+  }
 }
 
 function initFirebaseAdmin() {
   if (!admin.apps.length) {
-    console.log(serviceAccount);
+    const serviceAccount = getServiceAccountFromEnv();
+
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
     });
