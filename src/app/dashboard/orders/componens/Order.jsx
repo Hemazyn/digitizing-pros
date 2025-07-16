@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import Header from "../../components/DHeader";
@@ -40,6 +40,8 @@ const getPillStyling = (status) => {
 
 export default function Orders({ setActiveTab, successFlag, cancelFlag }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const newOrderFlag = searchParams.get("newOrder");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();
   const [showNewOrder, setShowNewOrder] = useState(false);
@@ -49,6 +51,12 @@ export default function Orders({ setActiveTab, successFlag, cancelFlag }) {
 
   const [showOrderDetailsModal, setShowOrderDetailsModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+  useEffect(() => {
+    if (newOrderFlag) {
+      setShowNewOrder(true);
+    }
+  }, [newOrderFlag]);
 
   useEffect(() => {
     if (successFlag) {

@@ -79,7 +79,7 @@ export default function Header({ activeTab = "dashboard", onMenuToggle }) {
             {dropdownOpen ? <ChevronUp size={16} className="cursor-pointer" /> : <ChevronDown size={16} className="cursor-pointer" />}
           </button>
           {dropdownOpen && (
-            <div className="border-btGray absolute right-0 z-50 mt-3.5 flex w-30 flex-col rounded-xl border bg-white p-0.5">
+            <div className="border-btGray font-bricolage absolute right-0 z-50 mt-3.5 flex w-30 flex-col rounded-xl border bg-white p-0.5">
               <Link href="/" className="text-primary hover:text-btBlue relative flex cursor-pointer items-center justify-start gap-3 rounded-t-xl px-3 py-2">
                 <House size={16} />
                 <span className="text-sm">Home</span>

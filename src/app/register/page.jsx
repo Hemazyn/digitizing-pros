@@ -10,11 +10,11 @@ import Link from "next/link";
 import Image from "next/image";
 import VerifyEmailPage from "../components/VerifyEmail";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { initializeUserSettings } from "@/firebase/firestore";
 
 export default function RegisterPage() {
   const { user } = useAuth();
   const router = useRouter();
-  // const [error, setError] = useState('');
   const [showVerifyPopup, setShowVerifyPopup] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState("");
 
@@ -35,6 +35,31 @@ export default function RegisterPage() {
     }));
   };
 
+  // const handleRegister = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!form.agreeToTerms) {
+  //     Notiflix.Notify.failure("You must agree to the terms and conditions.");
+  //     return;
+  //   }
+
+  //   Notiflix.Loading.circle("Creating account...");
+
+  //   try {
+  //     const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
+  //     await sendEmailVerification(userCredential.user);
+
+  //     Notiflix.Loading.remove();
+  //     Notiflix.Notify.success("Account created! Please verify your email.");
+  //     localStorage.setItem("registeredEmail", form.email);
+  //     setRegisteredEmail(form.email);
+  //     setShowVerifyPopup(true);
+  //   } catch (err) {
+  //     Notiflix.Loading.remove();
+  //     Notiflix.Notify.failure(err.message);
+  //   }
+  // };
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -47,7 +72,11 @@ export default function RegisterPage() {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
-      await sendEmailVerification(userCredential.user);
+      const user = userCredential.user;
+
+      await initializeUserSettings(user.uid, form);
+
+      await sendEmailVerification(user);
 
       Notiflix.Loading.remove();
       Notiflix.Notify.success("Account created! Please verify your email.");
@@ -60,6 +89,28 @@ export default function RegisterPage() {
     }
   };
 
+  // const handleGoogleSignIn = async () => {
+  //   Notiflix.Loading.circle("Signing in with Google...");
+  //   const provider = new GoogleAuthProvider();
+
+  //   try {
+  //     const result = await signInWithPopup(auth, provider);
+  //     Notiflix.Loading.remove();
+  //     const user = result.user;
+
+  //     if (user.emailVerified) {
+  //       Notiflix.Notify.success(`Welcome back, ${user.email}`);
+  //       router.push("/store");
+  //     } else {
+  //       Notiflix.Notify.info("Please verify your email to continue.");
+  //     }
+  //   } catch (error) {
+  //     Notiflix.Loading.remove();
+  //     Notiflix.Notify.failure("Google sign-in failed. Please try again.");
+  //     console.error("Google sign-in error:", error);
+  //   }
+  // };
+
   const handleGoogleSignIn = async () => {
     Notiflix.Loading.circle("Signing in with Google...");
     const provider = new GoogleAuthProvider();
@@ -67,7 +118,15 @@ export default function RegisterPage() {
     try {
       const result = await signInWithPopup(auth, provider);
       Notiflix.Loading.remove();
+
       const user = result.user;
+
+      // Initialize settings if missing
+      await initializeUserSettings(user.uid, {
+        firstName: user.displayName?.split(" ")[0] || "",
+        lastName: user.displayName?.split(" ")[1] || "",
+        email: user.email || "",
+      });
 
       if (user.emailVerified) {
         Notiflix.Notify.success(`Welcome back, ${user.email}`);

@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Logo from "./Logo";
-import { Menu, X, ShoppingCart, ChevronDown, ChevronUp, House, Package, Mail, LogOut } from "lucide-react";
+import { Menu, X, ShoppingCart, ChevronDown, ChevronUp, House, Package, Mail, LogOut, Loader } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { signOut } from "firebase/auth";
@@ -19,8 +19,24 @@ export default function Header({ className = "" }) {
   const { totalItemsInCart } = useCart();
   const router = useRouter();
   const pathname = usePathname();
+  const [loading, setLoading] = useState(false);
 
   const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    const handleStart = () => setLoading(true);
+    const handleComplete = () => setLoading(false);
+
+    router.events?.on("routeChangeStart", handleStart);
+    router.events?.on("routeChangeComplete", handleComplete);
+    router.events?.on("routeChangeError", handleComplete);
+
+    return () => {
+      router.events?.off("routeChangeStart", handleStart);
+      router.events?.off("routeChangeComplete", handleComplete);
+      router.events?.off("routeChangeError", handleComplete);
+    };
+  }, [router]);
 
   useEffect(() => {
     setIsClient(true);
@@ -65,7 +81,7 @@ export default function Header({ className = "" }) {
       <div className="flex items-center justify-between px-4 py-3 lg:px-20">
         <Logo />
         <nav className="hidden items-center gap-8 md:flex">
-          <a href="/#main" className="hover:text-btBlue cursor-pointer text-sm font-medium hover:font-semibold">
+          <a href="/#main" onClick={() => setLoading(true)} className="hover:text-btBlue cursor-pointer text-sm font-medium hover:font-semibold">
             Home
           </a>
           <a href="/#how-it-works" className="hover:text-btBlue cursor-pointer text-sm font-medium hover:font-semibold">
@@ -74,9 +90,17 @@ export default function Header({ className = "" }) {
           <a href="/#pricing" className="hover:text-btBlue cursor-pointer text-sm font-medium hover:font-semibold">
             Pricing
           </a>
-          <Link href="/contact" className={`hover:text-btBlue cursor-pointer text-sm font-medium hover:font-semibold ${pathname === "/contact" ? "text-btBlue" : "text-black"}`}>
+          <Link href="/contact" onClick={() => setLoading(true)} className={`hover:text-btBlue cursor-pointer text-sm font-medium hover:font-semibold ${pathname === "/contact" ? "text-btBlue" : "text-black"}`}>
             Contact
           </Link>
+          <Link href="/store" onClick={() => setLoading(true)} className={`hover:text-btBlue cursor-pointer text-sm font-medium hover:font-semibold ${pathname === "/store" ? "text-btBlue" : "text-black"}`}>
+            Store
+          </Link>
+          {loading && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <Loader size={40} className="text-btBlue animate-spin" />
+            </div>
+          )}
         </nav>
         <div className="hidden items-center gap-4 md:flex">
           {user ? (

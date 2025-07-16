@@ -92,3 +92,27 @@ export const removeItemPreferencesFromFirestore = async (userId, publicId) => {
     throw error;
   }
 };
+
+export const initializeUserSettings = async (userId) => {
+  if (!userId) throw new Error("User ID is required to initialize settings");
+
+  try {
+    await setDoc(
+      doc(db, "users", userId),
+      {
+        settings: {
+          account: { email: "", username: "", fullName: "", phoneNumber: "", marketingEmails: true, newsletter: true },
+          profile: {},
+          notifications: {},
+          billing: {},
+          security: {},
+        },
+      },
+      { merge: true },
+    );
+    console.log("User settings initialized for user:", userId);
+  } catch (error) {
+    console.error("Error initializing user settings:", error);
+    throw error;
+  }
+};

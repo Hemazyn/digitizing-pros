@@ -12,6 +12,7 @@ import { defaultPrice } from "../../constants";
 import Image from "next/image";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../firebase/firebase";
+import { Skeleton } from "../components/Skeleton";
 
 export default function StoreItemPage() {
   const [user, setUser] = useState(null);
@@ -72,25 +73,25 @@ export default function StoreItemPage() {
   useEffect(() => {
     if (!publicId) return;
     const fetchDetails = async () => {
-      Loading.dots("Loading product details...");
       try {
         setError(null);
-        const response = await fetch(`/api/cloudinary/${publicId}`);
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setResource(data);
-        setMainDisplayImage(data.secure_url);
+        const [productResponse, allImages] = await Promise.all([fetch(`/api/cloudinary/${publicId}`), fetchImagesFromCloudinary()]);
 
-        const allImages = await fetchImagesFromCloudinary();
+        if (!productResponse.ok) {
+          const errorData = await productResponse.json();
+          throw new Error(errorData.error || `HTTP error! status: ${productResponse.status}`);
+        }
+
+        const productData = await productResponse.json();
+        setResource(productData);
+        setMainDisplayImage(productData.secure_url);
+
         const filteredRelated = allImages
           .filter((img) => img.public_id !== publicId)
           .sort(() => 0.5 - Math.random())
           .slice(0, 4);
+
         setRelatedProducts(filteredRelated);
-        Loading.remove();
       } catch (err) {
         setError(err.message);
         Notify.failure(`Failed to load product details: ${err.message}`);
@@ -154,7 +155,37 @@ export default function StoreItemPage() {
   }
 
   if (!resource) {
-    return null;
+    return (
+      <>
+        <div className="relative flex flex-col">
+          <Header className="border-btGray border-b" />
+          <main className="flex min-h-screen flex-col items-center justify-center space-y-8 p-8 pt-16">
+            <div className="grid w-full max-w-5xl grid-cols-1 gap-8 md:grid-cols-10">
+              <div className="space-y-4 md:col-span-6">
+                <Skeleton className="h-80 w-full" />
+                <div className="flex space-x-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <Skeleton key={i} className="h-20 w-20" />
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-4 md:col-span-4">
+                <Skeleton className="h-10 w-2/3" />
+                <Skeleton className="h-6 w-1/3" />
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            </div>
+            <div className="grid w-full max-w-5xl grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+              {[1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} className="h-56 w-full rounded-lg" />
+              ))}
+            </div>
+          </main>
+          <Footer />
+        </div>
+      </>
+    );
   }
 
   return (

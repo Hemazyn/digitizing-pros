@@ -18,9 +18,6 @@ export default function Settings() {
       <div className="mx-auto mt-10 flex w-[92%] flex-col space-y-6">
         <div className="flex flex-row items-center justify-between">
           <h1 className="text-primary text-xl font-semibold">Settings</h1>
-          <div className="btn-bg flex w-fit cursor-pointer flex-row rounded-lg p-1.5">
-            <span className="text-xs font-medium text-white">Save Changes</span>
-          </div>
         </div>
       </div>
       <div className="bg-theadBg mx-auto mt-6 mb-5 flex w-fit gap-1 rounded-lg p-0.5 md:mx-0 md:ml-[4%]">
